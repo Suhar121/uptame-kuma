@@ -82,8 +82,8 @@ export default function PingChart({ heartbeats = [], monitorType = 'http' }) {
       >
         <defs>
           <linearGradient id="darkmatterPingGradient" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#10b981" stopOpacity="0.35" />
-            <stop offset="100%" stopColor="#10b981" stopOpacity="0.0" />
+            <stop offset="0%" stopColor="#20c997" stopOpacity="0.35" />
+            <stop offset="100%" stopColor="#20c997" stopOpacity="0.0" />
           </linearGradient>
         </defs>
 
@@ -156,7 +156,7 @@ export default function PingChart({ heartbeats = [], monitorType = 'http' }) {
         <path
           d={linePath}
           fill="none"
-          stroke="#10b981"
+          stroke="#20c997"
           strokeWidth="2"
           strokeLinecap="round"
           strokeLinejoin="round"
@@ -184,7 +184,7 @@ export default function PingChart({ heartbeats = [], monitorType = 'http' }) {
             cx={pt.x}
             cy={pt.y}
             r={hoveredPoint === i ? 4 : 2}
-            fill={pt.point.status === 'down' ? '#ef4444' : '#10b981'}
+            fill={pt.point.status === 'down' ? '#ef4444' : '#20c997'}
             className="cursor-pointer transition-all"
             onMouseEnter={() => setHoveredPoint(i)}
             onMouseLeave={() => setHoveredPoint(null)}

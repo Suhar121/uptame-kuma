@@ -177,7 +177,7 @@ export default function AddMonitorModal({ isOpen, onClose, onAdd }) {
             </button>
             <button
               type="submit"
-              className="px-5 py-2 rounded-md bg-[#22c55e] hover:bg-[#16a34a] text-slate-950 font-bold"
+              className="px-5 py-2 rounded-md bg-[#20c997] hover:bg-[#1ba87e] text-slate-950 font-bold"
             >
               Save Monitor
             </button>

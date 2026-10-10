@@ -259,7 +259,7 @@ export default function HostMetricsDashboard({ onBackToDashboard }) {
           subtitle="Precise utilization at the recorded time"
           data={history.map(h => ({ time: h.time, value: h.memory.usedGB }))}
           unit=" GB"
-          color="#10b981"
+          color="#20c997"
           yMaxOverride={hostInfo?.memory?.total ? Math.round(hostInfo.memory.total / 1e9) : 16}
         />
 
