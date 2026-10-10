@@ -3,7 +3,7 @@ import http from 'http';
 import { WebSocketServer } from 'ws';
 import cors from 'cors';
 import { monitorEngine } from './monitor-engine.js';
-import { getSystemDrives, getHostOverview } from './system-metrics.js';
+import { getSystemDrives, getHostOverview, getMetricsHistory, getSystemServices } from './system-metrics.js';
 import { getSettings, saveSettings, sendTelegramNotification } from './notifications.js';
 
 import path from 'path';
@@ -87,6 +87,15 @@ app.get('/api/system/drives', async (req, res) => {
 app.get('/api/system/overview', async (req, res) => {
   const overview = await getHostOverview();
   res.json(overview);
+});
+
+app.get('/api/system/metrics-history', (req, res) => {
+  res.json(getMetricsHistory());
+});
+
+app.get('/api/system/services', async (req, res) => {
+  const services = await getSystemServices();
+  res.json(services);
 });
 
 // Telegram / Notification Settings

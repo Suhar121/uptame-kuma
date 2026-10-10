@@ -5,6 +5,7 @@ import MonitorDetail from './components/MonitorDetail';
 import EditMonitorModal from './components/EditMonitorModal';
 import StatusPage from './components/StatusPage';
 import TelegramModal from './components/TelegramModal';
+import HostMetricsDashboard from './components/HostMetricsDashboard';
 
 export default function App() {
   const [monitors, setMonitors] = useState([]);
@@ -202,6 +203,8 @@ export default function App() {
             onToggleTelegram={handleToggleTelegram}
           />
         </div>
+      ) : currentView === 'telemetry' ? (
+        <HostMetricsDashboard />
       ) : (
         <StatusPage
           monitors={monitors}

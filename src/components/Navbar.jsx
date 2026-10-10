@@ -1,5 +1,5 @@
 import React from 'react';
-import { Gauge, FileText, Sun, Moon, ShieldCheck, HardDrive, Send } from 'lucide-react';
+import { Gauge, FileText, Sun, Moon, ShieldCheck, HardDrive, Send, Activity } from 'lucide-react';
 
 export default function Navbar({ currentView, setCurrentView, hostInfo, onOpenTelegramModal }) {
   return (
@@ -34,6 +34,18 @@ export default function Navbar({ currentView, setCurrentView, hostInfo, onOpenTe
         >
           <Send className="w-3.5 h-3.5" />
           <span>Telegram Alerts</span>
+        </button>
+
+        <button
+          onClick={() => setCurrentView('telemetry')}
+          className={`flex items-center gap-1.5 text-xs font-medium px-3 py-1.5 rounded transition-all ${
+            currentView === 'telemetry'
+              ? 'text-white bg-[#1e2b45]'
+              : 'text-slate-300 hover:text-white hover:bg-[#151f33]'
+          }`}
+        >
+          <Activity className="w-3.5 h-3.5 text-emerald-400" />
+          <span>Host Telemetry</span>
         </button>
 
         <button
