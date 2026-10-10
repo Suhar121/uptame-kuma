@@ -1,0 +1,23 @@
+{
+  "slug": "monitor",
+  "title": "monitor",
+  "description": "hahhaah",
+  "footerText": "Developed By Suhar Yaseen",
+  "refreshInterval": 300,
+  "theme": "auto",
+  "showTags": false,
+  "showPoweredBy": true,
+  "showCertificateExpiry": false,
+  "showOnlyLastHeartbeat": false,
+  "groups": [
+    {
+      "id": "g1",
+      "name": "Services",
+      "monitorIds": [
+        "2",
+        "1"
+      ]
+    }
+  ],
+  "incidents": []
+}

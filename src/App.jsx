@@ -3,11 +3,16 @@ import Navbar from './components/Navbar';
 import Sidebar from './components/Sidebar';
 import MonitorDetail from './components/MonitorDetail';
 import EditMonitorModal from './components/EditMonitorModal';
-import StatusPage from './components/StatusPage';
+import StatusPageEditor from './components/StatusPageEditor';
 import TelegramModal from './components/TelegramModal';
 import HostMetricsDashboard from './components/HostMetricsDashboard';
+import AuthScreen from './components/AuthScreen';
 
 export default function App() {
+  const [currentUser, setCurrentUser] = useState(null);
+  const [setupRequired, setSetupRequired] = useState(false);
+  const [authChecking, setAuthChecking] = useState(true);
+
   const [monitors, setMonitors] = useState([]);
   const [selectedId, setSelectedId] = useState('1'); // Default to Ops #1
   const [currentView, setCurrentView] = useState('dashboard');
@@ -17,8 +22,45 @@ export default function App() {
   const [hostInfo, setHostInfo] = useState(null);
   const wsRef = useRef(null);
 
-  // Load monitors and host info
+  // Check auth & setup requirements on initial mount
   useEffect(() => {
+    async function checkAuth() {
+      try {
+        const setupRes = await fetch('/api/auth/setup-required');
+        const setupData = await setupRes.json();
+        if (setupData.setupRequired) {
+          setSetupRequired(true);
+          setAuthChecking(false);
+          return;
+        }
+
+        const token = localStorage.getItem('uptime_token') || sessionStorage.getItem('uptime_token');
+        if (token) {
+          const meRes = await fetch('/api/auth/me', {
+            headers: { Authorization: `Bearer ${token}` }
+          });
+          if (meRes.ok) {
+            const meData = await meRes.json();
+            setCurrentUser(meData.user);
+          } else {
+            localStorage.removeItem('uptime_token');
+            sessionStorage.removeItem('uptime_token');
+          }
+        }
+      } catch (err) {
+        console.error('Auth check error:', err);
+      } finally {
+        setAuthChecking(false);
+      }
+    }
+
+    checkAuth();
+  }, []);
+
+  // Load monitors and host info when logged in
+  useEffect(() => {
+    if (!currentUser) return;
+
     fetch('/api/monitors')
       .then(res => res.json())
       .then(data => {
@@ -33,10 +75,12 @@ export default function App() {
       .then(res => res.json())
       .then(data => setHostInfo(data))
       .catch(console.error);
-  }, []);
+  }, [currentUser]);
 
   // Setup WebSocket connection for live heartbeats
   useEffect(() => {
+    if (!currentUser) return;
+
     const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
     const wsUrl = `${protocol}//${window.location.hostname}:3001/ws`;
 
@@ -72,7 +116,27 @@ export default function App() {
     return () => {
       if (wsRef.current) wsRef.current.close();
     };
-  }, []);
+  }, [currentUser]);
+
+  const handleAuthSuccess = (user, token) => {
+    setCurrentUser(user);
+    setSetupRequired(false);
+  };
+
+  const handleLogout = async () => {
+    const token = localStorage.getItem('uptime_token') || sessionStorage.getItem('uptime_token');
+    try {
+      await fetch('/api/auth/logout', {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}` }
+      });
+    } catch (e) {
+      console.error(e);
+    }
+    localStorage.removeItem('uptime_token');
+    sessionStorage.removeItem('uptime_token');
+    setCurrentUser(null);
+  };
 
   const handlePause = async (id) => {
     try {
@@ -163,15 +227,39 @@ export default function App() {
     }
   };
 
+  // Loading spinner during initial auth probe
+  if (authChecking) {
+    return (
+      <div className="min-h-screen bg-background flex flex-col items-center justify-center text-primary font-mono space-y-4">
+        <div className="w-10 h-10 border-2 border-primary/30 border-t-primary rounded-full animate-spin" />
+        <span className="text-xs text-muted-foreground tracking-wider uppercase font-semibold">
+          Initializing Uptime Kuma...
+        </span>
+      </div>
+    );
+  }
+
+  // Not authenticated: render Setup or Login Screen
+  if (!currentUser) {
+    return (
+      <AuthScreen
+        isSetup={setupRequired}
+        onSuccess={handleAuthSuccess}
+      />
+    );
+  }
+
   const selectedMonitor = monitors.find(m => m.id === selectedId) || monitors[0];
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#0c1322] text-slate-100 antialiased selection:bg-emerald-500 selection:text-slate-950">
+    <div className="min-h-screen flex flex-col bg-background text-foreground antialiased selection:bg-primary selection:text-primary-foreground font-mono">
       {/* Top Navbar */}
       <Navbar
         currentView={currentView}
         setCurrentView={setCurrentView}
         hostInfo={hostInfo}
+        currentUser={currentUser}
+        onLogout={handleLogout}
         onOpenTelegramModal={() => setIsTelegramModalOpen(true)}
       />
 
@@ -206,7 +294,7 @@ export default function App() {
       ) : currentView === 'telemetry' ? (
         <HostMetricsDashboard />
       ) : (
-        <StatusPage
+        <StatusPageEditor
           monitors={monitors}
           onBackToDashboard={() => setCurrentView('dashboard')}
         />

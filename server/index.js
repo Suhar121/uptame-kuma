@@ -5,6 +5,8 @@ import cors from 'cors';
 import { monitorEngine } from './monitor-engine.js';
 import { getSystemDrives, getHostOverview, getMetricsHistory, getSystemServices } from './system-metrics.js';
 import { getSettings, saveSettings, sendTelegramNotification } from './notifications.js';
+import { isSetupRequired, createInitialAdmin, loginUser, verifySession, logoutUser } from './auth.js';
+import { loadStatusPage, saveStatusPage } from './status-page.js';
 
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -120,6 +122,79 @@ app.post('/api/settings/telegram/test', async (req, res) => {
   } catch (err) {
     res.status(400).json({ success: false, error: err.message });
   }
+});
+
+// Authentication Endpoints
+app.get('/api/auth/setup-required', (req, res) => {
+  res.json({ setupRequired: isSetupRequired() });
+});
+
+app.post('/api/auth/setup', (req, res) => {
+  try {
+    const { username, password } = req.body;
+    const result = createInitialAdmin(username, password);
+    res.json(result);
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+});
+
+app.post('/api/auth/login', (req, res) => {
+  try {
+    const { username, password } = req.body;
+    const result = loginUser(username, password);
+    res.json(result);
+  } catch (err) {
+    res.status(401).json({ error: err.message });
+  }
+});
+
+app.get('/api/auth/me', (req, res) => {
+  const authHeader = req.headers.authorization;
+  const token = authHeader && authHeader.startsWith('Bearer ') ? authHeader.slice(7) : null;
+  const user = verifySession(token);
+  if (!user) {
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
+  res.json({ user });
+});
+
+app.post('/api/auth/logout', (req, res) => {
+  const authHeader = req.headers.authorization;
+  const token = authHeader && authHeader.startsWith('Bearer ') ? authHeader.slice(7) : null;
+  logoutUser(token);
+  res.json({ success: true });
+});
+
+// Status Page Endpoints
+app.get('/api/status-page', (req, res) => {
+  res.json(loadStatusPage());
+});
+
+app.post('/api/status-page', (req, res) => {
+  saveStatusPage(req.body);
+  res.json({ success: true, config: req.body });
+});
+
+app.post('/api/status-page/incident', (req, res) => {
+  const current = loadStatusPage();
+  const newIncident = {
+    id: 'inc-' + Date.now(),
+    title: req.body.title || 'Service Degradation',
+    content: req.body.content || '',
+    style: req.body.style || 'warning',
+    createdAt: new Date().toISOString()
+  };
+  current.incidents = [newIncident, ...(current.incidents || [])];
+  saveStatusPage(current);
+  res.json({ success: true, incident: newIncident, config: current });
+});
+
+app.delete('/api/status-page/incident/:id', (req, res) => {
+  const current = loadStatusPage();
+  current.incidents = (current.incidents || []).filter(inc => inc.id !== req.params.id);
+  saveStatusPage(current);
+  res.json({ success: true, config: current });
 });
 
 // SPA fallback

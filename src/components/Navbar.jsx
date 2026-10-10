@@ -1,7 +1,7 @@
 import React from 'react';
-import { Gauge, FileText, Moon, HardDrive, Send, Activity, Sparkles } from 'lucide-react';
+import { Gauge, FileText, Moon, HardDrive, Send, Activity, User, LogOut } from 'lucide-react';
 
-export default function Navbar({ currentView, setCurrentView, hostInfo, onOpenTelegramModal }) {
+export default function Navbar({ currentView, setCurrentView, hostInfo, onOpenTelegramModal, currentUser, onLogout }) {
   return (
     <header className="h-14 bg-card/80 backdrop-blur-md border-b border-border px-4 flex items-center justify-between select-none z-30 sticky top-0 shadow-xs">
       {/* Brand */}
@@ -76,9 +76,21 @@ export default function Navbar({ currentView, setCurrentView, hostInfo, onOpenTe
           <span>Dashboard</span>
         </button>
 
-        <div className="w-8 h-8 rounded-md bg-muted/60 border border-border flex items-center justify-center text-muted-foreground hover:text-foreground cursor-pointer transition-colors shadow-xs ml-1">
-          <Moon className="w-3.5 h-3.5" />
-        </div>
+        {currentUser && (
+          <div className="flex items-center gap-2 pl-2 border-l border-border">
+            <div className="hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-muted/60 border border-border text-xs text-foreground">
+              <User className="w-3.5 h-3.5 text-primary" />
+              <span className="font-semibold font-mono">{currentUser.username}</span>
+            </div>
+            <button
+              onClick={onLogout}
+              title="Sign Out"
+              className="p-1.5 rounded-md text-muted-foreground hover:text-rose-400 hover:bg-rose-500/10 border border-border hover:border-rose-500/30 transition-all shadow-xs"
+            >
+              <LogOut className="w-3.5 h-3.5" />
+            </button>
+          </div>
+        )}
       </div>
     </header>
   );
