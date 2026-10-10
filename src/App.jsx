@@ -261,6 +261,7 @@ export default function App() {
         currentUser={currentUser}
         onLogout={handleLogout}
         onOpenTelegramModal={() => setIsTelegramModalOpen(true)}
+        monitors={monitors}
       />
 
       {/* Main Body */}
@@ -292,7 +293,9 @@ export default function App() {
           />
         </div>
       ) : currentView === 'telemetry' ? (
-        <HostMetricsDashboard />
+        <HostMetricsDashboard
+          onBackToDashboard={() => setCurrentView('dashboard')}
+        />
       ) : (
         <StatusPageEditor
           monitors={monitors}

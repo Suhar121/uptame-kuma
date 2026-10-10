@@ -9,7 +9,8 @@ import {
   Layers,
   Search,
   Sliders,
-  BatteryMedium
+  BatteryMedium,
+  ArrowLeft
 } from 'lucide-react';
 
 function TelemetryCard({
@@ -173,7 +174,7 @@ function TelemetryCard({
   );
 }
 
-export default function HostMetricsDashboard() {
+export default function HostMetricsDashboard({ onBackToDashboard }) {
   const [history, setHistory] = useState([]);
   const [services, setServices] = useState([]);
   const [serviceFilter, setServiceFilter] = useState('');
@@ -207,14 +208,25 @@ export default function HostMetricsDashboard() {
     <div className="flex-1 bg-background text-foreground overflow-y-auto p-6 space-y-6 select-none font-mono">
       {/* Top Overview Bar */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 border-b border-border pb-4">
-        <div>
-          <h1 className="text-xl font-bold text-foreground flex items-center gap-2 font-sans">
-            <Activity className="w-5 h-5 text-primary" />
-            <span>Host Resource & Hardware Telemetry</span>
-          </h1>
-          <p className="text-xs text-muted-foreground mt-0.5">
-            Real-time operating system metrics across Linux & Windows kernels
-          </p>
+        <div className="flex items-center gap-3">
+          {onBackToDashboard && (
+            <button
+              onClick={onBackToDashboard}
+              className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors px-3 py-1.5 rounded-lg bg-card border border-border shadow-2xs hover:bg-muted"
+            >
+              <ArrowLeft className="w-3.5 h-3.5" />
+              <span>Dashboard</span>
+            </button>
+          )}
+          <div>
+            <h1 className="text-xl font-bold text-foreground flex items-center gap-2 font-sans">
+              <Activity className="w-5 h-5 text-primary" />
+              <span>Host Resource & Hardware Telemetry</span>
+            </h1>
+            <p className="text-xs text-muted-foreground mt-0.5">
+              Real-time operating system metrics across Linux & Windows kernels
+            </p>
+          </div>
         </div>
 
         {hostInfo && (
