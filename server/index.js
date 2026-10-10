@@ -6,7 +6,7 @@ import { monitorEngine } from './monitor-engine.js';
 import { getSystemDrives, getHostOverview, getMetricsHistory, getSystemServices } from './system-metrics.js';
 import { getSettings, saveSettings, sendTelegramNotification } from './notifications.js';
 import { isSetupRequired, createInitialAdmin, loginUser, verifySession, logoutUser } from './auth.js';
-import { loadStatusPage, saveStatusPage } from './status-page.js';
+import { loadStatusPage, saveStatusPage, addIncidentDb, deleteIncidentDb } from './status-page.js';
 
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -177,7 +177,6 @@ app.post('/api/status-page', (req, res) => {
 });
 
 app.post('/api/status-page/incident', (req, res) => {
-  const current = loadStatusPage();
   const newIncident = {
     id: 'inc-' + Date.now(),
     title: req.body.title || 'Service Degradation',
@@ -185,16 +184,13 @@ app.post('/api/status-page/incident', (req, res) => {
     style: req.body.style || 'warning',
     createdAt: new Date().toISOString()
   };
-  current.incidents = [newIncident, ...(current.incidents || [])];
-  saveStatusPage(current);
-  res.json({ success: true, incident: newIncident, config: current });
+  addIncidentDb(req.body.slug || 'monitor', newIncident);
+  res.json({ success: true, incident: newIncident, config: loadStatusPage(req.body.slug || 'monitor') });
 });
 
 app.delete('/api/status-page/incident/:id', (req, res) => {
-  const current = loadStatusPage();
-  current.incidents = (current.incidents || []).filter(inc => inc.id !== req.params.id);
-  saveStatusPage(current);
-  res.json({ success: true, config: current });
+  deleteIncidentDb(req.params.id);
+  res.json({ success: true, config: loadStatusPage() });
 });
 
 // SPA fallback

@@ -1,11 +1,5 @@
-import fs from 'fs';
-import path from 'path';
 import crypto from 'crypto';
-import { fileURLToPath } from 'url';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-const USERS_FILE = path.join(__dirname, '..', 'data', 'users.json');
+import { getUsersFromDb, insertUserToDb, deleteUserFromDb } from './db.js';
 
 // In-memory active tokens
 const activeSessions = new Map();
@@ -21,22 +15,7 @@ function verifyPassword(password, hash, salt) {
 }
 
 export function loadUsers() {
-  try {
-    if (fs.existsSync(USERS_FILE)) {
-      return JSON.parse(fs.readFileSync(USERS_FILE, 'utf8'));
-    }
-  } catch (err) {
-    console.error('Failed to load users:', err);
-  }
-  return [];
-}
-
-export function saveUsers(users) {
-  try {
-    fs.writeFileSync(USERS_FILE, JSON.stringify(users, null, 2), 'utf8');
-  } catch (err) {
-    console.error('Failed to save users:', err);
-  }
+  return getUsersFromDb();
 }
 
 export function isSetupRequired() {
@@ -66,8 +45,7 @@ export function createInitialAdmin(username, password) {
     createdAt: Date.now()
   };
 
-  users.push(newUser);
-  saveUsers(users);
+  insertUserToDb(newUser);
 
   // Generate session token
   const token = crypto.randomBytes(32).toString('hex');

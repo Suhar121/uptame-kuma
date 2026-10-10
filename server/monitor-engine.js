@@ -1,6 +1,13 @@
 import net from 'net';
 import { getSystemDrives, getSystemCpu, getSystemMemory } from './system-metrics.js';
-import { loadMonitors, saveMonitors } from './storage.js';
+import { 
+  loadMonitors, 
+  saveMonitors, 
+  saveMonitorToDb, 
+  addHeartbeatToDb, 
+  deleteMonitorFromDb, 
+  clearMonitorHeartbeatsFromDb 
+} from './storage.js';
 import { triggerAlert } from './notifications.js';
 
 class MonitorEngine {
@@ -193,7 +200,8 @@ class MonitorEngine {
       monitor.avgPing = Math.round((sum / validPings.length) * 100) / 100;
     }
 
-    saveMonitors(this.monitors);
+    addHeartbeatToDb(monitor.id, heartbeat);
+    saveMonitorToDb(monitor);
     this.broadcast('HEARTBEAT', { monitorId: monitor.id, heartbeat, monitor });
   }
 
@@ -227,7 +235,7 @@ class MonitorEngine {
     };
 
     this.monitors.push(newMonitor);
-    saveMonitors(this.monitors);
+    saveMonitorToDb(newMonitor);
     this.scheduleMonitor(newMonitor);
     this.broadcast('MONITOR_ADDED', newMonitor);
     return newMonitor;
@@ -253,7 +261,7 @@ class MonitorEngine {
       }
     }
 
-    saveMonitors(this.monitors);
+    saveMonitorToDb(monitor);
     this.broadcast('MONITOR_UPDATED', monitor);
     return monitor;
   }
@@ -262,7 +270,7 @@ class MonitorEngine {
     const monitor = this.monitors.find(m => m.id === id);
     if (!monitor) return null;
     monitor.telegramEnabled = !(monitor.telegramEnabled ?? true);
-    saveMonitors(this.monitors);
+    saveMonitorToDb(monitor);
     this.broadcast('MONITOR_UPDATED', monitor);
     return monitor;
   }
@@ -273,7 +281,7 @@ class MonitorEngine {
       this.intervals.delete(id);
     }
     this.monitors = this.monitors.filter(m => m.id !== id);
-    saveMonitors(this.monitors);
+    deleteMonitorFromDb(id);
     this.broadcast('MONITOR_DELETED', { id });
   }
 
@@ -290,7 +298,7 @@ class MonitorEngine {
       }
       monitor.status = 'paused';
     }
-    saveMonitors(this.monitors);
+    saveMonitorToDb(monitor);
     this.broadcast('MONITOR_UPDATED', monitor);
     return monitor;
   }
@@ -301,7 +309,8 @@ class MonitorEngine {
       monitor.heartbeats = [];
       monitor.lastError = null;
       monitor.uptime24h = 100;
-      saveMonitors(this.monitors);
+      clearMonitorHeartbeatsFromDb(id);
+      saveMonitorToDb(monitor);
       this.broadcast('MONITOR_UPDATED', monitor);
     }
   }

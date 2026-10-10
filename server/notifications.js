@@ -1,18 +1,13 @@
-import fs from 'fs';
-import path from 'path';
-import { fileURLToPath } from 'url';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-const SETTINGS_FILE = path.join(__dirname, '..', 'data', 'settings.json');
+import { getSettingsFromDb, saveSettingsToDb } from './db.js';
 
 export function getSettings() {
   try {
-    if (fs.existsSync(SETTINGS_FILE)) {
-      return JSON.parse(fs.readFileSync(SETTINGS_FILE, 'utf8'));
+    const s = getSettingsFromDb();
+    if (s && Object.keys(s).length > 0) {
+      return s;
     }
   } catch (e) {
-    console.error('Failed to read settings:', e);
+    console.error('Failed to read settings from DB:', e);
   }
   return {
     telegram: {
@@ -25,9 +20,9 @@ export function getSettings() {
 
 export function saveSettings(settings) {
   try {
-    fs.writeFileSync(SETTINGS_FILE, JSON.stringify(settings, null, 2), 'utf8');
+    saveSettingsToDb(settings);
   } catch (e) {
-    console.error('Failed to save settings:', e);
+    console.error('Failed to save settings to DB:', e);
   }
 }
 
