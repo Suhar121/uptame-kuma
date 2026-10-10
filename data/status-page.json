@@ -1,7 +1,7 @@
 {
   "slug": "monitor",
   "title": "monitor",
-  "description": "hahhaah",
+  "description": "",
   "footerText": "Developed By Suhar Yaseen",
   "refreshInterval": 300,
   "theme": "auto",
@@ -11,10 +11,9 @@
   "showOnlyLastHeartbeat": false,
   "groups": [
     {
-      "id": "g1",
-      "name": "Services",
+      "id": "g-1791654376265",
+      "name": "New Group",
       "monitorIds": [
-        "2",
         "1"
       ]
     }

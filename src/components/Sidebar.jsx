@@ -94,10 +94,10 @@ export default function Sidebar({
             <div
               key={m.id}
               onClick={() => onSelect(m.id)}
-              className={`p-2.5 rounded-lg cursor-pointer transition-all flex items-center justify-between ${
+              className={`p-2.5 rounded-lg cursor-pointer transition-all duration-200 hover:-translate-y-0.5 active:scale-[0.99] flex items-center justify-between ${
                 isSelected
-                  ? 'bg-accent/80 border border-sidebar-border text-foreground shadow-xs'
-                  : 'hover:bg-muted/40 border border-transparent text-muted-foreground hover:text-foreground'
+                  ? 'bg-accent/90 border border-primary/30 text-foreground shadow-xs ring-1 ring-primary/20'
+                  : 'hover:bg-muted/50 border border-transparent text-muted-foreground hover:text-foreground hover:shadow-2xs'
               }`}
             >
               {/* Left pill & title */}

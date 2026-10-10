@@ -39,7 +39,7 @@ export default function MonitorDetail({
     : `${monitor.avgPing || 0}ms`;
 
   return (
-    <div className="flex-1 bg-background text-foreground overflow-y-auto p-6 space-y-5 relative select-none">
+    <div className="flex-1 bg-background text-foreground overflow-y-auto p-6 space-y-5 relative select-none animate-view-enter">
       {/* Header & Controls */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
         <div>
@@ -142,8 +142,8 @@ export default function MonitorDetail({
             <span
               className={`inline-block px-8 py-2 rounded-full font-bold text-base tracking-wide shadow-md font-sans ${
                 isDown
-                  ? 'bg-red-500 text-white shadow-red-500/20'
-                  : 'bg-emerald-500 text-slate-950 shadow-emerald-500/20'
+                  ? 'bg-rose-500 text-white shadow-rose-500/20'
+                  : 'bg-emerald-500 text-slate-950 shadow-emerald-500/20 animate-glow-operational'
               }`}
             >
               {isDown ? 'Down' : 'Up'}

@@ -266,7 +266,7 @@ export default function App() {
 
       {/* Main Body */}
       {currentView === 'dashboard' ? (
-        <div className="flex-1 flex overflow-hidden">
+        <div className="flex-1 flex overflow-hidden animate-view-enter">
           {/* Left Sidebar */}
           <Sidebar
             monitors={monitors}
