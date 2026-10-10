@@ -4,12 +4,14 @@ import Sidebar from './components/Sidebar';
 import MonitorDetail from './components/MonitorDetail';
 import AddMonitorModal from './components/AddMonitorModal';
 import StatusPage from './components/StatusPage';
+import TelegramModal from './components/TelegramModal';
 
 export default function App() {
   const [monitors, setMonitors] = useState([]);
   const [selectedId, setSelectedId] = useState('1'); // Default to Ops #1
   const [currentView, setCurrentView] = useState('dashboard');
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [isTelegramModalOpen, setIsTelegramModalOpen] = useState(false);
   const [hostInfo, setHostInfo] = useState(null);
   const wsRef = useRef(null);
 
@@ -146,6 +148,7 @@ export default function App() {
         currentView={currentView}
         setCurrentView={setCurrentView}
         hostInfo={hostInfo}
+        onOpenTelegramModal={() => setIsTelegramModalOpen(true)}
       />
 
       {/* Main Body */}
@@ -180,6 +183,12 @@ export default function App() {
         isOpen={isAddModalOpen}
         onClose={() => setIsAddModalOpen(false)}
         onAdd={handleAddMonitor}
+      />
+
+      {/* Telegram Setup Modal */}
+      <TelegramModal
+        isOpen={isTelegramModalOpen}
+        onClose={() => setIsTelegramModalOpen(false)}
       />
     </div>
   );

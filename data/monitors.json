@@ -9,24 +9,6 @@
     "active": true,
     "heartbeats": [
       {
-        "time": 1791648224537,
-        "status": "up",
-        "ping": 12,
-        "msg": "200 OK"
-      },
-      {
-        "time": 1791648274537,
-        "status": "up",
-        "ping": 28,
-        "msg": "200 OK"
-      },
-      {
-        "time": 1791648324537,
-        "status": "up",
-        "ping": 20,
-        "msg": "200 OK"
-      },
-      {
         "time": 1791648374537,
         "status": "up",
         "ping": 18,
@@ -295,14 +277,44 @@
         "status": "up",
         "ping": 77,
         "msg": "200 OK"
+      },
+      {
+        "time": 1791650648726,
+        "status": "up",
+        "ping": 40,
+        "msg": "200 OK"
+      },
+      {
+        "time": 1791650698909,
+        "status": "up",
+        "ping": 220,
+        "msg": "200 OK"
+      },
+      {
+        "time": 1791650748883,
+        "status": "up",
+        "ping": 184,
+        "msg": "200 OK"
+      },
+      {
+        "time": 1791650798746,
+        "status": "up",
+        "ping": 34,
+        "msg": "200 OK"
+      },
+      {
+        "time": 1791650825883,
+        "status": "up",
+        "ping": 207,
+        "msg": "200 OK"
       }
     ],
     "status": "up",
-    "lastPing": 77,
-    "avgPing": 36.68,
-    "uptime24h": 58.33,
-    "uptime30d": 58.33,
-    "uptime1y": 58.33,
+    "lastPing": 207,
+    "avgPing": 55.07,
+    "uptime24h": 60,
+    "uptime30d": 60,
+    "uptime1y": 60,
     "lastError": "[Ops] [DOWN] fetch failed"
   },
   {
@@ -314,24 +326,6 @@
     "interval": 50,
     "active": true,
     "heartbeats": [
-      {
-        "time": 1791648224537,
-        "status": "up",
-        "ping": 26,
-        "msg": "200 OK"
-      },
-      {
-        "time": 1791648274537,
-        "status": "up",
-        "ping": 26,
-        "msg": "200 OK"
-      },
-      {
-        "time": 1791648324537,
-        "status": "up",
-        "ping": 30,
-        "msg": "200 OK"
-      },
       {
         "time": 1791648374537,
         "status": "up",
@@ -601,11 +595,41 @@
         "status": "up",
         "ping": 358,
         "msg": "200 OK"
+      },
+      {
+        "time": 1791650649020,
+        "status": "up",
+        "ping": 333,
+        "msg": "200 OK"
+      },
+      {
+        "time": 1791650699056,
+        "status": "up",
+        "ping": 366,
+        "msg": "200 OK"
+      },
+      {
+        "time": 1791650749096,
+        "status": "up",
+        "ping": 396,
+        "msg": "200 OK"
+      },
+      {
+        "time": 1791650799123,
+        "status": "up",
+        "ping": 410,
+        "msg": "200 OK"
+      },
+      {
+        "time": 1791650827392,
+        "status": "up",
+        "ping": 402,
+        "msg": "200 OK"
       }
     ],
     "status": "up",
-    "lastPing": 358,
-    "avgPing": 141.46,
+    "lastPing": 402,
+    "avgPing": 172.3,
     "uptime24h": 100,
     "uptime30d": 100,
     "uptime1y": 100,
@@ -621,54 +645,6 @@
     "interval": 30,
     "active": true,
     "heartbeats": [
-      {
-        "time": 1791648424537,
-        "status": "up",
-        "ping": 95,
-        "msg": "Disk C: at 95% capacity (Warning threshold 90%)"
-      },
-      {
-        "time": 1791648474537,
-        "status": "up",
-        "ping": 95,
-        "msg": "Disk C: at 95% capacity (Warning threshold 90%)"
-      },
-      {
-        "time": 1791648524537,
-        "status": "up",
-        "ping": 95,
-        "msg": "Disk C: at 95% capacity (Warning threshold 90%)"
-      },
-      {
-        "time": 1791648574537,
-        "status": "up",
-        "ping": 95,
-        "msg": "Disk C: at 95% capacity (Warning threshold 90%)"
-      },
-      {
-        "time": 1791648624537,
-        "status": "up",
-        "ping": 95,
-        "msg": "Disk C: at 95% capacity (Warning threshold 90%)"
-      },
-      {
-        "time": 1791648674537,
-        "status": "up",
-        "ping": 95,
-        "msg": "Disk C: at 95% capacity (Warning threshold 90%)"
-      },
-      {
-        "time": 1791648724537,
-        "status": "up",
-        "ping": 95,
-        "msg": "Disk C: at 95% capacity (Warning threshold 90%)"
-      },
-      {
-        "time": 1791648774537,
-        "status": "up",
-        "ping": 95,
-        "msg": "Disk C: at 95% capacity (Warning threshold 90%)"
-      },
       {
         "time": 1791648824537,
         "status": "up",
@@ -920,6 +896,54 @@
         "status": "up",
         "ping": 95,
         "msg": "Disk C:: 94.9% used"
+      },
+      {
+        "time": 1791650608987,
+        "status": "up",
+        "ping": 95,
+        "msg": "Disk C:: 94.9% used"
+      },
+      {
+        "time": 1791650638960,
+        "status": "up",
+        "ping": 95,
+        "msg": "Disk C:: 94.9% used"
+      },
+      {
+        "time": 1791650669236,
+        "status": "up",
+        "ping": 95,
+        "msg": "Disk C:: 94.9% used"
+      },
+      {
+        "time": 1791650698960,
+        "status": "up",
+        "ping": 95,
+        "msg": "Disk C:: 94.9% used"
+      },
+      {
+        "time": 1791650728996,
+        "status": "up",
+        "ping": 95,
+        "msg": "Disk C:: 95% used"
+      },
+      {
+        "time": 1791650758989,
+        "status": "up",
+        "ping": 95,
+        "msg": "Disk C:: 95.1% used"
+      },
+      {
+        "time": 1791650788976,
+        "status": "up",
+        "ping": 95,
+        "msg": "Disk C:: 94.9% used"
+      },
+      {
+        "time": 1791650826465,
+        "status": "up",
+        "ping": 95,
+        "msg": "Disk C:: 94.9% used"
       }
     ],
     "status": "up",
@@ -939,54 +963,6 @@
     "interval": 30,
     "active": true,
     "heartbeats": [
-      {
-        "time": 1791648424537,
-        "status": "up",
-        "ping": 49,
-        "msg": "RAM at 49%"
-      },
-      {
-        "time": 1791648474537,
-        "status": "up",
-        "ping": 49,
-        "msg": "RAM at 49%"
-      },
-      {
-        "time": 1791648524537,
-        "status": "up",
-        "ping": 49,
-        "msg": "RAM at 49%"
-      },
-      {
-        "time": 1791648574537,
-        "status": "up",
-        "ping": 49,
-        "msg": "RAM at 49%"
-      },
-      {
-        "time": 1791648624537,
-        "status": "up",
-        "ping": 49,
-        "msg": "RAM at 49%"
-      },
-      {
-        "time": 1791648674537,
-        "status": "up",
-        "ping": 49,
-        "msg": "RAM at 49%"
-      },
-      {
-        "time": 1791648724537,
-        "status": "up",
-        "ping": 49,
-        "msg": "RAM at 49%"
-      },
-      {
-        "time": 1791648774537,
-        "status": "up",
-        "ping": 49,
-        "msg": "RAM at 49%"
-      },
       {
         "time": 1791648824537,
         "status": "up",
@@ -1238,11 +1214,59 @@
         "status": "up",
         "ping": 51,
         "msg": "RAM: 51.1% used"
+      },
+      {
+        "time": 1791650608993,
+        "status": "up",
+        "ping": 51,
+        "msg": "RAM: 51.2% used"
+      },
+      {
+        "time": 1791650638966,
+        "status": "up",
+        "ping": 51,
+        "msg": "RAM: 50.6% used"
+      },
+      {
+        "time": 1791650669252,
+        "status": "up",
+        "ping": 51,
+        "msg": "RAM: 50.6% used"
+      },
+      {
+        "time": 1791650698979,
+        "status": "up",
+        "ping": 51,
+        "msg": "RAM: 50.8% used"
+      },
+      {
+        "time": 1791650729002,
+        "status": "up",
+        "ping": 51,
+        "msg": "RAM: 50.9% used"
+      },
+      {
+        "time": 1791650758995,
+        "status": "up",
+        "ping": 51,
+        "msg": "RAM: 50.6% used"
+      },
+      {
+        "time": 1791650788987,
+        "status": "up",
+        "ping": 50,
+        "msg": "RAM: 50.4% used"
+      },
+      {
+        "time": 1791650825443,
+        "status": "up",
+        "ping": 51,
+        "msg": "RAM: 50.6% used"
       }
     ],
     "status": "up",
     "lastPing": 51,
-    "avgPing": 49.64,
+    "avgPing": 49.94,
     "uptime24h": 100,
     "uptime30d": 100,
     "uptime1y": 100,

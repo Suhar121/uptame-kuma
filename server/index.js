@@ -4,6 +4,7 @@ import { WebSocketServer } from 'ws';
 import cors from 'cors';
 import { monitorEngine } from './monitor-engine.js';
 import { getSystemDrives, getHostOverview } from './system-metrics.js';
+import { getSettings, saveSettings, sendTelegramNotification } from './notifications.js';
 
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -74,6 +75,30 @@ app.get('/api/system/drives', async (req, res) => {
 app.get('/api/system/overview', async (req, res) => {
   const overview = await getHostOverview();
   res.json(overview);
+});
+
+// Telegram / Notification Settings
+app.get('/api/settings', (req, res) => {
+  res.json(getSettings());
+});
+
+app.post('/api/settings', (req, res) => {
+  saveSettings(req.body);
+  res.json({ success: true, settings: req.body });
+});
+
+app.post('/api/settings/telegram/test', async (req, res) => {
+  const { botToken, chatId } = req.body;
+  try {
+    const result = await sendTelegramNotification({
+      botToken,
+      chatId,
+      text: '🎉 <b>Uptime Kuma Test Notification</b>\n\nYour Telegram bot is successfully connected and ready to send downtime alerts!'
+    });
+    res.json({ success: true, result });
+  } catch (err) {
+    res.status(400).json({ success: false, error: err.message });
+  }
 });
 
 // SPA fallback

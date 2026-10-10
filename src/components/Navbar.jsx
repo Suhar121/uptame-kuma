@@ -1,7 +1,7 @@
 import React from 'react';
-import { Gauge, FileText, Sun, Moon, ShieldCheck, HardDrive } from 'lucide-react';
+import { Gauge, FileText, Sun, Moon, ShieldCheck, HardDrive, Send } from 'lucide-react';
 
-export default function Navbar({ currentView, setCurrentView, hostInfo }) {
+export default function Navbar({ currentView, setCurrentView, hostInfo, onOpenTelegramModal }) {
   return (
     <header className="h-14 bg-[#0a101d] border-b border-[#1b253b] px-4 flex items-center justify-between select-none">
       {/* Brand */}
@@ -27,6 +27,14 @@ export default function Navbar({ currentView, setCurrentView, hostInfo }) {
             <span>Host: <strong className="text-slate-200">{hostInfo.hostname}</strong></span>
           </div>
         )}
+
+        <button
+          onClick={onOpenTelegramModal}
+          className="flex items-center gap-1.5 text-xs font-medium px-3 py-1.5 rounded text-blue-400 bg-blue-500/10 hover:bg-blue-500/20 border border-blue-500/30 transition-all"
+        >
+          <Send className="w-3.5 h-3.5" />
+          <span>Telegram Alerts</span>
+        </button>
 
         <button
           onClick={() => setCurrentView('status')}

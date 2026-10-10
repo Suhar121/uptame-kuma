@@ -1,6 +1,7 @@
 import net from 'net';
 import { getSystemDrives, getSystemCpu, getSystemMemory } from './system-metrics.js';
 import { loadMonitors, saveMonitors } from './storage.js';
+import { triggerAlert } from './notifications.js';
 
 class MonitorEngine {
   constructor() {
@@ -165,6 +166,12 @@ class MonitorEngine {
     monitor.heartbeats.push(heartbeat);
     if (monitor.heartbeats.length > 50) {
       monitor.heartbeats.shift();
+    }
+
+    // Check if status changed and trigger alert
+    const previousStatus = monitor.status;
+    if (previousStatus && previousStatus !== 'pending' && previousStatus !== status) {
+      triggerAlert(monitor, status, previousStatus, lastError || msg);
     }
 
     // Update statistics
