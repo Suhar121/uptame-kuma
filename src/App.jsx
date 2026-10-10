@@ -7,8 +7,10 @@ import StatusPageEditor from './components/StatusPageEditor';
 import TelegramModal from './components/TelegramModal';
 import HostMetricsDashboard from './components/HostMetricsDashboard';
 import AuthScreen from './components/AuthScreen';
+import PublicStatusPage from './components/PublicStatusPage';
 
 export default function App() {
+  const [pathname, setPathname] = useState(window.location.pathname);
   const [currentUser, setCurrentUser] = useState(null);
   const [setupRequired, setSetupRequired] = useState(false);
   const [authChecking, setAuthChecking] = useState(true);
@@ -22,7 +24,14 @@ export default function App() {
   const [hostInfo, setHostInfo] = useState(null);
   const wsRef = useRef(null);
 
-  // Check auth & setup requirements on initial mount
+  // Sync browser back/forward buttons
+  useEffect(() => {
+    const handlePopState = () => setPathname(window.location.pathname);
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
+
+  // Check auth & setup requirements on initial mount (for admin routes)
   useEffect(() => {
     async function checkAuth() {
       try {
@@ -118,6 +127,23 @@ export default function App() {
     };
   }, [currentUser]);
 
+  // =========================================================================
+  // 1. PUBLIC ROUTE: /status/:slug (NO LOGIN REQUIRED)
+  // =========================================================================
+  if (pathname.startsWith('/status')) {
+    return (
+      <PublicStatusPage
+        onGoToAdmin={() => {
+          window.history.pushState({}, '', '/');
+          setPathname('/');
+        }}
+      />
+    );
+  }
+
+  // =========================================================================
+  // 2. ADMIN ROUTES: / (LOGIN REQUIRED)
+  // =========================================================================
   const handleAuthSuccess = (user, token) => {
     setCurrentUser(user);
     setSetupRequired(false);
@@ -300,6 +326,10 @@ export default function App() {
         <StatusPageEditor
           monitors={monitors}
           onBackToDashboard={() => setCurrentView('dashboard')}
+          onViewPublicPage={() => {
+            window.history.pushState({}, '', '/status/monitor');
+            setPathname('/status/monitor');
+          }}
         />
       )}
 

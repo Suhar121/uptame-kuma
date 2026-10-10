@@ -506,6 +506,18 @@ export default function StatusPageEditor({ monitors = [], onBackToDashboard }) {
               <span className="hidden sm:inline">{copiedLink ? 'Copied!' : 'Copy Link'}</span>
             </button>
 
+            {/* Open live public page */}
+            <a
+              href={`/status/${config.slug || 'monitor'}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              title="Open public status page in new tab (No login required)"
+              className="flex items-center gap-1.5 text-xs text-secondary hover:text-foreground px-2.5 py-1.5 rounded-lg bg-secondary/10 hover:bg-secondary/20 border border-secondary/30 shadow-2xs transition-all hover:scale-[1.02]"
+            >
+              <ExternalLink className="w-3.5 h-3.5" />
+              <span className="hidden sm:inline">Open Public Page</span>
+            </a>
+
             {onBackToDashboard && (
               <button
                 onClick={onBackToDashboard}
