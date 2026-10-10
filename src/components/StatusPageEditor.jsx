@@ -130,7 +130,7 @@ export default function StatusPageEditor({ monitors = [], onBackToDashboard }) {
       slug: cleanSlug,
       title: newPageTitle.trim() || cleanSlug,
       description: 'System Status and Operational Telemetry',
-      footerText: 'Powered by Uptime Kuma',
+      footerText: 'Powered by Uptame Kuma',
       refreshInterval: 300,
       theme: 'auto',
       showTags: false,
@@ -1071,12 +1071,12 @@ export default function StatusPageEditor({ monitors = [], onBackToDashboard }) {
               <div>
                 Powered by{' '}
                 <a
-                  href="https://github.com/louislam/uptime-kuma"
+                  href="https://github.com/Suhar121/uptame-kuma"
                   target="_blank"
                   rel="noreferrer"
                   className="text-primary hover:underline font-semibold"
                 >
-                  Uptime Kuma
+                  Uptame Kuma
                 </a>
               </div>
             )}

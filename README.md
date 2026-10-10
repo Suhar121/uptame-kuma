@@ -1,8 +1,8 @@
-# Uptime Kuma + Integrated Host & Disk Monitoring
+# Uptame Kuma + Integrated Host & Disk Monitoring
 
-A lightweight, real-time service and host monitoring platform combining **Uptime Kuma's signature UI & UX** with **native system resource & disk capacity diagnostics**.
+A lightweight, real-time service and host monitoring platform combining **Uptame Kuma's signature UI & UX** with **native system resource & disk capacity diagnostics**.
 
-![Uptime Kuma Dark UI](https://img.shields.io/badge/UI-Uptime%20Kuma%20Style-22c55e)
+![Uptame Kuma Dark UI](https://img.shields.io/badge/UI-Uptame%20Kuma%20Style-20c997)
 ![Host Monitoring](https://img.shields.io/badge/Hardware-Disk%20%7C%20CPU%20%7C%20RAM-3b82f6)
 ![Node](https://img.shields.io/badge/Node-v22-green)
 
@@ -10,7 +10,7 @@ A lightweight, real-time service and host monitoring platform combining **Uptime
 
 ## Features
 
-### 1. Pixel-Accurate Uptime Kuma UI / UX
+### 1. Pixel-Accurate Uptame Kuma UI / UX
 * **Signature Dark Aesthetic:** Deep slate/charcoal palette (`#0c1322`), mint green status accents (`#22c55e`), and alert banners (`#ef4444`).
 * **Heartbeat Bar Strip:** Segmented vertical pill bars tracking 35-minute uptime intervals with live updates.
 * **5 Metric Overview Tiles:** Current Response, 24-hour Average, and 24-hour / 30-day / 1-year Uptime percentages.

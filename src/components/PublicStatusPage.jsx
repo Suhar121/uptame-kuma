@@ -158,7 +158,7 @@ export default function PublicStatusPage({ onGoToAdmin }) {
       <div className="min-h-screen bg-background text-foreground font-mono flex flex-col justify-between antialiased">
         <header className="border-b border-border bg-card/80 backdrop-blur-md sticky top-0 z-30 shadow-xs">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
-            <span className="text-sm font-bold font-sans">Uptime Kuma Status</span>
+            <span className="text-sm font-bold font-sans">Uptame Kuma Status</span>
             {onGoToAdmin && (
               <button
                 onClick={onGoToAdmin}
@@ -544,12 +544,12 @@ export default function PublicStatusPage({ onGoToAdmin }) {
             <div className="pt-2 text-[11px]">
               Powered by{' '}
               <a
-                href="https://github.com/louislam/uptime-kuma"
+                href="https://github.com/Suhar121/uptame-kuma"
                 target="_blank"
                 rel="noreferrer"
                 className="text-primary hover:underline font-semibold"
               >
-                Uptime Kuma
+                Uptame Kuma
               </a>
             </div>
           )}

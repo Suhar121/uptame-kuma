@@ -82,7 +82,7 @@ export default function AuthScreen({ isSetup, onSuccess }) {
           </div>
           <div className="flex items-center gap-2 mb-1">
             <h1 className="text-xl font-bold tracking-tight text-foreground font-sans">
-              Uptime Kuma
+              Uptame Kuma
             </h1>
             <span className="text-[10px] uppercase font-semibold tracking-wider px-2 py-0.5 rounded-full bg-secondary/15 text-secondary border border-secondary/30">
               Darkmatter

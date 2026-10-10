@@ -1,7 +1,7 @@
 services:
-  uptime-kuma:
+  uptame-kuma:
     build: .
-    container_name: uptime-kuma
+    container_name: uptame-kuma
     restart: unless-stopped
     ports:
       - "3001:3001"

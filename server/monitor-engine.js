@@ -73,7 +73,7 @@ class MonitorEngine {
 
         const res = await fetch(monitor.url, {
           signal: controller.signal,
-          headers: { 'User-Agent': 'UptimeKuma-Integrated/1.0' }
+          headers: { 'User-Agent': 'UptameKuma-Integrated/1.0' }
         });
         clearTimeout(timeout);
         ping = Date.now() - startTime;

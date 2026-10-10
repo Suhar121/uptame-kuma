@@ -89,7 +89,7 @@ export default function StatusPage({ monitors = [], onBackToDashboard }) {
 
       {/* Footer */}
       <footer className="text-center text-xs text-muted-foreground pt-6">
-        Powered by <strong>Uptime Kuma</strong> • Darkmatter Theme
+        Powered by <strong>Uptame Kuma</strong> • Darkmatter Theme
       </footer>
     </div>
   );

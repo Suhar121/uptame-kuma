@@ -24,8 +24,8 @@ Works on any Linux VPS, macOS, or Windows machine without needing Node.js instal
 ### Steps
 1. Transfer or clone the repository to the new machine:
    ```bash
-   git clone <your-repo-url>
-   cd charming-mendeleev
+   git clone https://github.com/Suhar121/uptame-kuma.git
+   cd uptame-kuma
    ```
 2. Start the container in background:
    ```bash
@@ -58,8 +58,8 @@ docker compose logs -f
 
 #### 1. Clone or Copy the Files
 ```bash
-git clone <your-repo-url>
-cd charming-mendeleev
+git clone https://github.com/Suhar121/uptame-kuma.git
+cd uptame-kuma
 ```
 
 #### 2. Install Dependencies
@@ -91,7 +91,7 @@ npm install -g pm2
 
 ### 2. Start with PM2
 ```bash
-pm2 start server/index.js --name "uptime-kuma"
+pm2 start server/index.js --name "uptame-kuma"
 ```
 
 ### 3. Save PM2 Process List and Enable Auto-Startup on Boot
@@ -101,10 +101,10 @@ pm2 startup
 ```
 
 ### Useful PM2 Commands
-- View logs: `pm2 logs uptime-kuma`
+- View logs: `pm2 logs uptame-kuma`
 - Check status: `pm2 status`
-- Restart app: `pm2 restart uptime-kuma`
-- Stop app: `pm2 stop uptime-kuma`
+- Restart app: `pm2 restart uptame-kuma`
+- Stop app: `pm2 stop uptame-kuma`
 
 ---
 
@@ -114,19 +114,19 @@ If you prefer standard Linux systemd services:
 
 1. Create a service file:
    ```bash
-   sudo nano /etc/systemd/system/uptime-kuma.service
+   sudo nano /etc/systemd/system/uptame-kuma.service
    ```
 
 2. Paste the following configuration (replace `/path/to/app` and `youruser` with your actual path and user):
    ```ini
    [Unit]
-   Description=Uptime Kuma Monitoring Service
+   Description=Uptame Kuma Monitoring Service
    After=network.target
 
    [Service]
    Type=simple
    User=youruser
-   WorkingDirectory=/path/to/charming-mendeleev
+   WorkingDirectory=/path/to/uptame-kuma
    ExecStart=/usr/bin/node server/index.js
    Restart=on-failure
    Environment=NODE_ENV=production
@@ -139,13 +139,13 @@ If you prefer standard Linux systemd services:
 3. Enable and start the service:
    ```bash
    sudo systemctl daemon-reload
-   sudo systemctl enable uptime-kuma
-   sudo systemctl start uptime-kuma
+   sudo systemctl enable uptame-kuma
+   sudo systemctl start uptame-kuma
    ```
 
 4. Check status:
    ```bash
-   sudo systemctl status uptime-kuma
+   sudo systemctl status uptame-kuma
    ```
 
 ---

@@ -103,7 +103,7 @@ export default function EditMonitorModal({
           </button>
         </div>
 
-        {/* 2-Column Form matching Uptime Kuma screenshot */}
+        {/* 2-Column Form matching Uptame Kuma screenshot */}
         <form onSubmit={handleSubmit} className="p-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 text-xs">
             {/* LEFT COLUMN: General */}

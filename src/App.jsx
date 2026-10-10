@@ -259,7 +259,7 @@ export default function App() {
       <div className="min-h-screen bg-background flex flex-col items-center justify-center text-primary font-mono space-y-4">
         <div className="w-10 h-10 border-2 border-primary/30 border-t-primary rounded-full animate-spin" />
         <span className="text-xs text-muted-foreground tracking-wider uppercase font-semibold">
-          Initializing Uptime Kuma...
+          Initializing Uptame Kuma...
         </span>
       </div>
     );

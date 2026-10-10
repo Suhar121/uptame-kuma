@@ -88,7 +88,7 @@ export default function Navbar({
           </div>
           <div className="flex items-center gap-2">
             <span className="font-bold text-sm tracking-tight text-foreground font-sans">
-              Uptime Kuma
+              Uptame Kuma
             </span>
             <span className="hidden sm:inline-block text-[10px] uppercase font-semibold tracking-wider px-2 py-0.5 rounded-full bg-secondary/15 text-secondary border border-secondary/30">
               Darkmatter

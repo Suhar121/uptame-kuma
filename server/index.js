@@ -123,7 +123,7 @@ app.post('/api/settings/telegram/test', async (req, res) => {
     const result = await sendTelegramNotification({
       botToken,
       chatId,
-      text: '🎉 <b>Uptime Kuma Test Notification</b>\n\nYour Telegram bot is successfully connected and ready to send downtime alerts!'
+      text: '🎉 <b>Uptame Kuma Test Notification</b>\n\nYour Telegram bot is successfully connected and ready to send downtime alerts!'
     });
     res.json({ success: true, result });
   } catch (err) {
@@ -243,6 +243,6 @@ app.use((req, res) => {
 
 const PORT = process.env.PORT || 3001;
 server.listen(PORT, () => {
-  console.log(`Uptime Kuma backend with Native System/Disk monitoring listening on port ${PORT}`);
+  console.log(`Uptame Kuma backend with Native System/Disk monitoring listening on port ${PORT}`);
   monitorEngine.start();
 });
