@@ -212,6 +212,9 @@ class MonitorEngine {
       target: data.target || 'C:',
       threshold: Number(data.threshold) || 90,
       interval: Number(data.interval) || 50,
+      retries: Number(data.retries) || 0,
+      telegramEnabled: data.telegramEnabled !== undefined ? data.telegramEnabled : true,
+      telegramChatId: data.telegramChatId || '',
       active: true,
       heartbeats: [],
       status: 'pending',
@@ -228,6 +231,40 @@ class MonitorEngine {
     this.scheduleMonitor(newMonitor);
     this.broadcast('MONITOR_ADDED', newMonitor);
     return newMonitor;
+  }
+
+  updateMonitor(id, data) {
+    const monitor = this.monitors.find(m => m.id === id);
+    if (!monitor) return null;
+
+    if (data.name !== undefined) monitor.name = data.name;
+    if (data.tag !== undefined) monitor.tag = data.tag;
+    if (data.url !== undefined) monitor.url = data.url;
+    if (data.target !== undefined) monitor.target = data.target;
+    if (data.threshold !== undefined) monitor.threshold = Number(data.threshold);
+    if (data.retries !== undefined) monitor.retries = Number(data.retries);
+    if (data.telegramEnabled !== undefined) monitor.telegramEnabled = data.telegramEnabled;
+    if (data.telegramChatId !== undefined) monitor.telegramChatId = data.telegramChatId;
+
+    if (data.interval !== undefined && Number(data.interval) !== monitor.interval) {
+      monitor.interval = Number(data.interval);
+      if (monitor.active) {
+        this.scheduleMonitor(monitor);
+      }
+    }
+
+    saveMonitors(this.monitors);
+    this.broadcast('MONITOR_UPDATED', monitor);
+    return monitor;
+  }
+
+  toggleTelegram(id) {
+    const monitor = this.monitors.find(m => m.id === id);
+    if (!monitor) return null;
+    monitor.telegramEnabled = !(monitor.telegramEnabled ?? true);
+    saveMonitors(this.monitors);
+    this.broadcast('MONITOR_UPDATED', monitor);
+    return monitor;
   }
 
   deleteMonitor(id) {

@@ -55,10 +55,19 @@ export async function sendTelegramNotification({ botToken, chatId, text }) {
 }
 
 export async function triggerAlert(monitor, newStatus, previousStatus, details) {
+  // Check if Telegram alert is disabled for this specific monitor
+  if (monitor.telegramEnabled === false) {
+    console.log(`Telegram notification skipped for [${monitor.name}] (disabled per monitor)`);
+    return;
+  }
+
   const settings = getSettings();
   if (!settings.telegram || !settings.telegram.enabled) return;
 
-  const { botToken, chatId } = settings.telegram;
+  const botToken = monitor.telegramBotToken || settings.telegram.botToken;
+  // Use monitor's specific Chat ID if configured, otherwise fall back to global Chat ID
+  const chatId = monitor.telegramChatId || settings.telegram.chatId;
+
   if (!botToken || !chatId) return;
 
   const isDown = newStatus === 'down';
@@ -77,7 +86,7 @@ ${details ? `<b>Details:</b> <i>${details}</i>` : ''}
 
   try {
     await sendTelegramNotification({ botToken, chatId, text: message });
-    console.log(`Telegram alert sent for [${monitor.name}] (${statusText})`);
+    console.log(`Telegram alert sent for [${monitor.name}] to chat ${chatId} (${statusText})`);
   } catch (err) {
     console.error('Failed to send Telegram alert:', err.message);
   }

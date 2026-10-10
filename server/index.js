@@ -57,6 +57,18 @@ app.delete('/api/monitors/:id', (req, res) => {
   res.json({ success: true });
 });
 
+app.put('/api/monitors/:id', (req, res) => {
+  const updated = monitorEngine.updateMonitor(req.params.id, req.body);
+  if (!updated) return res.status(404).json({ error: 'Monitor not found' });
+  res.json(updated);
+});
+
+app.post('/api/monitors/:id/toggle-telegram', (req, res) => {
+  const updated = monitorEngine.toggleTelegram(req.params.id);
+  if (!updated) return res.status(404).json({ error: 'Monitor not found' });
+  res.json(updated);
+});
+
 app.post('/api/monitors/:id/pause', (req, res) => {
   const updated = monitorEngine.togglePause(req.params.id);
   res.json(updated);

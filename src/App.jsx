@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import Navbar from './components/Navbar';
 import Sidebar from './components/Sidebar';
 import MonitorDetail from './components/MonitorDetail';
-import AddMonitorModal from './components/AddMonitorModal';
+import EditMonitorModal from './components/EditMonitorModal';
 import StatusPage from './components/StatusPage';
 import TelegramModal from './components/TelegramModal';
 
@@ -10,7 +10,8 @@ export default function App() {
   const [monitors, setMonitors] = useState([]);
   const [selectedId, setSelectedId] = useState('1'); // Default to Ops #1
   const [currentView, setCurrentView] = useState('dashboard');
-  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingMonitor, setEditingMonitor] = useState(null);
   const [isTelegramModalOpen, setIsTelegramModalOpen] = useState(false);
   const [hostInfo, setHostInfo] = useState(null);
   const wsRef = useRef(null);
@@ -82,6 +83,16 @@ export default function App() {
     }
   };
 
+  const handleToggleTelegram = async (id) => {
+    try {
+      const res = await fetch(`/api/monitors/${id}/toggle-telegram`, { method: 'POST' });
+      const updated = await res.json();
+      setMonitors(prev => prev.map(m => m.id === id ? updated : m));
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
   const handleDelete = async (id) => {
     if (confirm('Are you sure you want to delete this monitor?')) {
       try {
@@ -125,15 +136,27 @@ export default function App() {
     }
   };
 
-  const handleAddMonitor = async (newMonitorData) => {
+  const handleSaveMonitor = async (data) => {
     try {
-      const res = await fetch('/api/monitors', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(newMonitorData)
-      });
-      const created = await res.json();
-      setSelectedId(created.id);
+      if (data.id) {
+        // Edit existing monitor
+        const res = await fetch(`/api/monitors/${data.id}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        });
+        const updated = await res.json();
+        setMonitors(prev => prev.map(m => m.id === data.id ? updated : m));
+      } else {
+        // Create new monitor
+        const res = await fetch('/api/monitors', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        });
+        const created = await res.json();
+        setSelectedId(created.id);
+      }
     } catch (e) {
       console.error(e);
     }
@@ -159,7 +182,10 @@ export default function App() {
             monitors={monitors}
             selectedId={selectedId}
             onSelect={setSelectedId}
-            onOpenAddModal={() => setIsAddModalOpen(true)}
+            onOpenAddModal={() => {
+              setEditingMonitor(null);
+              setIsModalOpen(true);
+            }}
           />
 
           {/* Right Monitor Detail Pane */}
@@ -169,6 +195,11 @@ export default function App() {
             onDelete={handleDelete}
             onClearData={handleClearData}
             onClone={handleClone}
+            onEdit={(m) => {
+              setEditingMonitor(m);
+              setIsModalOpen(true);
+            }}
+            onToggleTelegram={handleToggleTelegram}
           />
         </div>
       ) : (
@@ -178,14 +209,16 @@ export default function App() {
         />
       )}
 
-      {/* Add Monitor Modal */}
-      <AddMonitorModal
-        isOpen={isAddModalOpen}
-        onClose={() => setIsAddModalOpen(false)}
-        onAdd={handleAddMonitor}
+      {/* Add / Edit Monitor Modal (with Per-Monitor Telegram Settings) */}
+      <EditMonitorModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        monitor={editingMonitor}
+        onSave={handleSaveMonitor}
+        onOpenGlobalTelegram={() => setIsTelegramModalOpen(true)}
       />
 
-      {/* Telegram Setup Modal */}
+      {/* Global Telegram Setup Modal */}
       <TelegramModal
         isOpen={isTelegramModalOpen}
         onClose={() => setIsTelegramModalOpen(false)}

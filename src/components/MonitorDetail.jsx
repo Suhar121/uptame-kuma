@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Pause, Play, Edit2, Copy, Trash2, ExternalLink, AlertTriangle, X, ChevronDown } from 'lucide-react';
+import { Pause, Play, Edit2, Copy, Trash2, ExternalLink, AlertTriangle, X, ChevronDown, Send } from 'lucide-react';
 import HeartbeatStrip from './HeartbeatStrip';
 import PingChart from './PingChart';
 
@@ -8,7 +8,9 @@ export default function MonitorDetail({
   onPause,
   onDelete,
   onClearData,
-  onClone
+  onClone,
+  onEdit,
+  onToggleTelegram
 }) {
   const [toastDismissed, setToastDismissed] = useState(false);
 
@@ -68,7 +70,21 @@ export default function MonitorDetail({
         </div>
 
         {/* Action Toolbar */}
-        <div className="flex items-center gap-2 text-xs">
+        <div className="flex items-center gap-2 text-xs flex-wrap">
+          {/* Per-Monitor Telegram Quick Toggle */}
+          <button
+            onClick={() => onToggleTelegram(monitor.id)}
+            title="Toggle Telegram notifications for this monitor"
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded border transition-colors ${
+              monitor.telegramEnabled !== false
+                ? 'bg-blue-500/15 text-blue-400 border-blue-500/30 hover:bg-blue-500/25'
+                : 'bg-[#131d2f] text-slate-500 border-[#202e48] hover:text-slate-400'
+            }`}
+          >
+            <Send className="w-3.5 h-3.5" />
+            <span>Telegram: {monitor.telegramEnabled !== false ? 'Active' : 'Off'}</span>
+          </button>
+
           <button
             onClick={() => onPause(monitor.id)}
             className="flex items-center gap-1.5 px-3 py-1.5 rounded bg-[#131d2f] hover:bg-[#1a273f] text-slate-200 border border-[#202e48] transition-colors"
@@ -78,6 +94,7 @@ export default function MonitorDetail({
           </button>
 
           <button
+            onClick={() => onEdit(monitor)}
             className="flex items-center gap-1.5 px-3 py-1.5 rounded bg-[#131d2f] hover:bg-[#1a273f] text-slate-200 border border-[#202e48] transition-colors"
           >
             <Edit2 className="w-3.5 h-3.5" />
