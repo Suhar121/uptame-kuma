@@ -50,12 +50,15 @@ export default function PublicStatusPage({ onGoToAdmin }) {
     // Extract slug from URL if present: /status/:slug
     const pathParts = window.location.pathname.split('/').filter(Boolean);
     const slug = (pathParts[0] === 'status' && pathParts[1]) ? pathParts[1] : 'monitor';
+    const token = localStorage.getItem('uptime_token') || sessionStorage.getItem('uptime_token');
+    const headers = token ? { Authorization: `Bearer ${token}` } : {};
 
-    fetch('/api/status-page')
+    fetch(`/api/status-page/${slug}`, { headers })
       .then(res => res.json())
       .then(data => {
         if (data) {
           setConfig(data);
+          if (data.isRestricted) return;
           setCountdown(data.refreshInterval || 300);
           // Expand all groups by default
           if (data.groups) {
@@ -67,9 +70,13 @@ export default function PublicStatusPage({ onGoToAdmin }) {
       })
       .catch(console.error);
 
-    fetch('/api/monitors')
+    fetch('/api/monitors', { headers })
       .then(res => res.json())
-      .then(data => setMonitors(data))
+      .then(data => {
+        if (Array.isArray(data)) {
+          setMonitors(data);
+        }
+      })
       .catch(console.error);
   }, []);
 
@@ -145,6 +152,127 @@ export default function PublicStatusPage({ onGoToAdmin }) {
     );
   }
 
+  // Handle 404 Not Found
+  if (config.error) {
+    return (
+      <div className="min-h-screen bg-background text-foreground font-mono flex flex-col justify-between antialiased">
+        <header className="border-b border-border bg-card/80 backdrop-blur-md sticky top-0 z-30 shadow-xs">
+          <div className="max-w-4xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+            <span className="text-sm font-bold font-sans">Uptime Kuma Status</span>
+            {onGoToAdmin && (
+              <button
+                onClick={onGoToAdmin}
+                className="flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-lg bg-primary text-primary-foreground hover:opacity-90 transition-all"
+              >
+                <LogIn className="w-3.5 h-3.5" />
+                <span>Go to Dashboard</span>
+              </button>
+            )}
+          </div>
+        </header>
+
+        <main className="flex-1 max-w-lg w-full mx-auto px-4 py-16 flex flex-col items-center justify-center text-center">
+          <div className="w-16 h-16 rounded-2xl bg-rose-500/10 border border-rose-500/30 flex items-center justify-center text-rose-400 mb-6 shadow-md">
+            <AlertCircle className="w-8 h-8" />
+          </div>
+          <h2 className="text-xl font-bold font-sans text-foreground mb-2">
+            Status Page Not Found
+          </h2>
+          <p className="text-xs text-muted-foreground leading-relaxed mb-6 font-mono">
+            The requested status page does not exist or may have been removed.
+          </p>
+          {onGoToAdmin && (
+            <button
+              onClick={onGoToAdmin}
+              className="flex items-center justify-center gap-2 px-4 py-2 rounded-xl bg-card border border-border hover:bg-muted text-xs font-semibold transition-all"
+            >
+              Return to Home
+            </button>
+          )}
+        </main>
+      </div>
+    );
+  }
+
+  // Handle Private Restricted Status Page
+  if (config.isRestricted) {
+    return (
+      <div className="min-h-screen bg-background text-foreground font-mono flex flex-col justify-between antialiased animate-view-enter">
+        <header className="border-b border-border bg-card/80 backdrop-blur-md sticky top-0 z-30 shadow-xs">
+          <div className="max-w-4xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-full bg-amber-500/15 border border-amber-500/30 flex items-center justify-center text-amber-400 shadow-sm">
+                <Lock className="w-5 h-5 text-amber-400" />
+              </div>
+              <div>
+                <h1 className="text-lg font-bold text-foreground font-sans tracking-tight">
+                  {config.title || 'Private Status Page'}
+                </h1>
+                <span className="text-[10px] uppercase font-semibold text-amber-400 tracking-wider">
+                  Access Restricted
+                </span>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-2">
+              <button
+                onClick={toggleTheme}
+                title={`Switch to ${theme === 'dark' ? 'Light' : 'Dark'} mode`}
+                className="w-8 h-8 rounded-lg bg-muted/60 hover:bg-muted border border-border flex items-center justify-center text-muted-foreground hover:text-foreground transition-all shadow-2xs hover:scale-105 active:scale-95"
+              >
+                {theme === 'dark' ? (
+                  <Sun className="w-4 h-4 text-amber-400" />
+                ) : (
+                  <Moon className="w-4 h-4 text-slate-700" />
+                )}
+              </button>
+
+              {onGoToAdmin && (
+                <button
+                  onClick={onGoToAdmin}
+                  className="flex items-center gap-1.5 text-xs font-bold px-3.5 py-1.5 rounded-lg bg-primary text-primary-foreground hover:opacity-90 transition-all shadow-2xs hover:scale-[1.02] active:scale-[0.98]"
+                >
+                  <LogIn className="w-3.5 h-3.5" />
+                  <span>Admin Sign In</span>
+                </button>
+              )}
+            </div>
+          </div>
+        </header>
+
+        <main className="flex-1 max-w-lg w-full mx-auto px-4 py-16 flex flex-col items-center justify-center text-center">
+          <div className="w-16 h-16 rounded-2xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400 mb-6 shadow-md animate-pulse">
+            <Lock className="w-8 h-8" />
+          </div>
+          <span className="text-xs uppercase tracking-widest font-bold text-amber-400 bg-amber-500/10 border border-amber-500/20 px-3 py-1 rounded-full mb-3">
+            Private Status Page
+          </span>
+          <h2 className="text-2xl font-bold font-sans text-foreground mb-3">
+            {config.title || 'Protected System Status'}
+          </h2>
+          <p className="text-xs text-muted-foreground leading-relaxed mb-8 font-mono max-w-md">
+            This status page is configured as <strong className="text-foreground">Private</strong>. Only authenticated administrators and authorized team members can view the real-time operational status, heartbeat history, and incident reports.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-3 w-full justify-center">
+            {onGoToAdmin && (
+              <button
+                onClick={onGoToAdmin}
+                className="flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl bg-primary text-primary-foreground font-bold text-xs shadow-md transition-all hover:scale-[1.02] active:scale-[0.98]"
+              >
+                <LogIn className="w-4 h-4" />
+                <span>Sign In to Access</span>
+              </button>
+            )}
+          </div>
+        </main>
+
+        <footer className="border-t border-border py-6 text-center text-xs text-muted-foreground">
+          <span>Protected by Uptime Monitoring &bull; Darkmatter Theme</span>
+        </footer>
+      </div>
+    );
+  }
+
   // Calculate overall operational health
   const groupMonitorIds = (config.groups || []).flatMap(g => g.monitorIds);
   const activeMonitors = monitors.filter(m => groupMonitorIds.includes(m.id));
@@ -164,9 +292,20 @@ export default function PublicStatusPage({ onGoToAdmin }) {
               </svg>
             </div>
             <div>
-              <h1 className="text-lg font-bold text-foreground font-sans tracking-tight">
-                {config.title || 'monitor'}
-              </h1>
+              <div className="flex items-center gap-2">
+                <h1 className="text-lg font-bold text-foreground font-sans tracking-tight">
+                  {config.title || 'monitor'}
+                </h1>
+                {config.isPublic === false ? (
+                  <span className="text-[10px] font-semibold text-amber-400 bg-amber-500/10 border border-amber-500/25 px-2 py-0.5 rounded-full flex items-center gap-1">
+                    <Lock className="w-2.5 h-2.5" /> Private (Admin View)
+                  </span>
+                ) : (
+                  <span className="text-[10px] font-semibold text-emerald-400 bg-emerald-500/10 border border-emerald-500/25 px-2 py-0.5 rounded-full flex items-center gap-1">
+                    🌐 Public
+                  </span>
+                )}
+              </div>
               <span className="text-[10px] uppercase font-semibold text-muted-foreground tracking-wider">
                 System Status
               </span>

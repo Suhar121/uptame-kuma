@@ -9,168 +9,6 @@
     "active": true,
     "heartbeats": [
       {
-        "time": 1791651023311,
-        "status": "up",
-        "ping": 182,
-        "msg": "200 OK"
-      },
-      {
-        "time": 1791651073282,
-        "status": "up",
-        "ping": 147,
-        "msg": "200 OK"
-      },
-      {
-        "time": 1791651123156,
-        "status": "up",
-        "ping": 18,
-        "msg": "200 OK"
-      },
-      {
-        "time": 1791651173228,
-        "status": "up",
-        "ping": 90,
-        "msg": "200 OK"
-      },
-      {
-        "time": 1791651223201,
-        "status": "up",
-        "ping": 55,
-        "msg": "200 OK"
-      },
-      {
-        "time": 1791651273181,
-        "status": "up",
-        "ping": 27,
-        "msg": "200 OK"
-      },
-      {
-        "time": 1791651323180,
-        "status": "up",
-        "ping": 18,
-        "msg": "200 OK"
-      },
-      {
-        "time": 1791651373319,
-        "status": "up",
-        "ping": 154,
-        "msg": "200 OK"
-      },
-      {
-        "time": 1791651423191,
-        "status": "up",
-        "ping": 17,
-        "msg": "200 OK"
-      },
-      {
-        "time": 1791651440492,
-        "status": "up",
-        "ping": 221,
-        "msg": "200 OK"
-      },
-      {
-        "time": 1791651486782,
-        "status": "up",
-        "ping": 215,
-        "msg": "200 OK"
-      },
-      {
-        "time": 1791651536752,
-        "status": "up",
-        "ping": 176,
-        "msg": "200 OK"
-      },
-      {
-        "time": 1791651589170,
-        "status": "down",
-        "ping": 0,
-        "msg": "fetch failed"
-      },
-      {
-        "time": 1791651639140,
-        "status": "down",
-        "ping": 0,
-        "msg": "fetch failed"
-      },
-      {
-        "time": 1791651686679,
-        "status": "up",
-        "ping": 83,
-        "msg": "200 OK"
-      },
-      {
-        "time": 1791651736640,
-        "status": "up",
-        "ping": 42,
-        "msg": "200 OK"
-      },
-      {
-        "time": 1791651786816,
-        "status": "up",
-        "ping": 206,
-        "msg": "200 OK"
-      },
-      {
-        "time": 1791651836632,
-        "status": "up",
-        "ping": 16,
-        "msg": "200 OK"
-      },
-      {
-        "time": 1791651886757,
-        "status": "up",
-        "ping": 133,
-        "msg": "200 OK"
-      },
-      {
-        "time": 1791651936729,
-        "status": "up",
-        "ping": 99,
-        "msg": "200 OK"
-      },
-      {
-        "time": 1791651986708,
-        "status": "up",
-        "ping": 65,
-        "msg": "200 OK"
-      },
-      {
-        "time": 1791652036671,
-        "status": "up",
-        "ping": 27,
-        "msg": "200 OK"
-      },
-      {
-        "time": 1791652086845,
-        "status": "up",
-        "ping": 187,
-        "msg": "200 OK"
-      },
-      {
-        "time": 1791652136822,
-        "status": "up",
-        "ping": 159,
-        "msg": "200 OK"
-      },
-      {
-        "time": 1791652186802,
-        "status": "up",
-        "ping": 134,
-        "msg": "200 OK"
-      },
-      {
-        "time": 1791652236761,
-        "status": "up",
-        "ping": 76,
-        "msg": "200 OK"
-      },
-      {
-        "time": 1791652260722,
-        "status": "up",
-        "ping": 133,
-        "msg": "200 OK"
-      },
-      {
         "time": 1791652307215,
         "status": "up",
         "ping": 132,
@@ -307,14 +145,176 @@
         "status": "up",
         "ping": 45,
         "msg": "200 OK"
+      },
+      {
+        "time": 1791653453088,
+        "status": "up",
+        "ping": 66,
+        "msg": "200 OK"
+      },
+      {
+        "time": 1791653503255,
+        "status": "up",
+        "ping": 222,
+        "msg": "200 OK"
+      },
+      {
+        "time": 1791653553060,
+        "status": "up",
+        "ping": 13,
+        "msg": "200 OK"
+      },
+      {
+        "time": 1791653603198,
+        "status": "up",
+        "ping": 146,
+        "msg": "200 OK"
+      },
+      {
+        "time": 1791653653071,
+        "status": "up",
+        "ping": 10,
+        "msg": "200 OK"
+      },
+      {
+        "time": 1791653660743,
+        "status": "up",
+        "ping": 68,
+        "msg": "200 OK"
+      },
+      {
+        "time": 1791653708466,
+        "status": "up",
+        "ping": 156,
+        "msg": "200 OK"
+      },
+      {
+        "time": 1791653758442,
+        "status": "up",
+        "ping": 118,
+        "msg": "200 OK"
+      },
+      {
+        "time": 1791653780971,
+        "status": "up",
+        "ping": 130,
+        "msg": "200 OK"
+      },
+      {
+        "time": 1791653828891,
+        "status": "up",
+        "ping": 34,
+        "msg": "200 OK"
+      },
+      {
+        "time": 1791653877028,
+        "status": "up",
+        "ping": 134,
+        "msg": "200 OK"
+      },
+      {
+        "time": 1791653924943,
+        "status": "up",
+        "ping": 183,
+        "msg": "200 OK"
+      },
+      {
+        "time": 1791653974919,
+        "status": "up",
+        "ping": 152,
+        "msg": "200 OK"
+      },
+      {
+        "time": 1791654024954,
+        "status": "up",
+        "ping": 175,
+        "msg": "200 OK"
+      },
+      {
+        "time": 1791654083260,
+        "status": "up",
+        "ping": 151,
+        "msg": "200 OK"
+      },
+      {
+        "time": 1791654130158,
+        "status": "up",
+        "ping": 93,
+        "msg": "200 OK"
+      },
+      {
+        "time": 1791654180126,
+        "status": "up",
+        "ping": 51,
+        "msg": "200 OK"
+      },
+      {
+        "time": 1791654230313,
+        "status": "up",
+        "ping": 223,
+        "msg": "200 OK"
+      },
+      {
+        "time": 1791654280275,
+        "status": "up",
+        "ping": 183,
+        "msg": "200 OK"
+      },
+      {
+        "time": 1791654330245,
+        "status": "up",
+        "ping": 143,
+        "msg": "200 OK"
+      },
+      {
+        "time": 1791654403156,
+        "status": "up",
+        "ping": 223,
+        "msg": "200 OK"
+      },
+      {
+        "time": 1791654449850,
+        "status": "up",
+        "ping": 135,
+        "msg": "200 OK"
+      },
+      {
+        "time": 1791654499765,
+        "status": "up",
+        "ping": 49,
+        "msg": "200 OK"
+      },
+      {
+        "time": 1791654549993,
+        "status": "up",
+        "ping": 274,
+        "msg": "200 OK"
+      },
+      {
+        "time": 1791654599760,
+        "status": "up",
+        "ping": 29,
+        "msg": "200 OK"
+      },
+      {
+        "time": 1791654649940,
+        "status": "up",
+        "ping": 207,
+        "msg": "200 OK"
+      },
+      {
+        "time": 1791654700051,
+        "status": "up",
+        "ping": 316,
+        "msg": "200 OK"
       }
     ],
     "status": "up",
-    "lastPing": 45,
-    "avgPing": 110.9,
-    "uptime24h": 96,
-    "uptime30d": 96,
-    "uptime1y": 96,
+    "lastPing": 316,
+    "avgPing": 126.54,
+    "uptime24h": 100,
+    "uptime30d": 100,
+    "uptime1y": 100,
     "lastError": "[Ops] [DOWN] fetch failed",
     "telegramEnabled": true
   },
@@ -327,162 +327,6 @@
     "interval": 50,
     "active": true,
     "heartbeats": [
-      {
-        "time": 1791651023529,
-        "status": "up",
-        "ping": 398,
-        "msg": "200 OK"
-      },
-      {
-        "time": 1791651073480,
-        "status": "up",
-        "ping": 344,
-        "msg": "200 OK"
-      },
-      {
-        "time": 1791651123489,
-        "status": "up",
-        "ping": 349,
-        "msg": "200 OK"
-      },
-      {
-        "time": 1791651173506,
-        "status": "up",
-        "ping": 353,
-        "msg": "200 OK"
-      },
-      {
-        "time": 1791651223525,
-        "status": "up",
-        "ping": 363,
-        "msg": "200 OK"
-      },
-      {
-        "time": 1791651273537,
-        "status": "up",
-        "ping": 367,
-        "msg": "200 OK"
-      },
-      {
-        "time": 1791651323510,
-        "status": "up",
-        "ping": 332,
-        "msg": "200 OK"
-      },
-      {
-        "time": 1791651373531,
-        "status": "up",
-        "ping": 351,
-        "msg": "200 OK"
-      },
-      {
-        "time": 1791651423522,
-        "status": "up",
-        "ping": 343,
-        "msg": "200 OK"
-      },
-      {
-        "time": 1791651440004,
-        "status": "up",
-        "ping": 400,
-        "msg": "200 OK"
-      },
-      {
-        "time": 1791651486938,
-        "status": "up",
-        "ping": 367,
-        "msg": "200 OK"
-      },
-      {
-        "time": 1791651536945,
-        "status": "up",
-        "ping": 365,
-        "msg": "200 OK"
-      },
-      {
-        "time": 1791651587119,
-        "status": "up",
-        "ping": 527,
-        "msg": "200 OK"
-      },
-      {
-        "time": 1791651637046,
-        "status": "up",
-        "ping": 440,
-        "msg": "200 OK"
-      },
-      {
-        "time": 1791651687060,
-        "status": "up",
-        "ping": 448,
-        "msg": "200 OK"
-      },
-      {
-        "time": 1791651737061,
-        "status": "up",
-        "ping": 447,
-        "msg": "200 OK"
-      },
-      {
-        "time": 1791651787067,
-        "status": "up",
-        "ping": 441,
-        "msg": "200 OK"
-      },
-      {
-        "time": 1791651837068,
-        "status": "up",
-        "ping": 432,
-        "msg": "200 OK"
-      },
-      {
-        "time": 1791651887666,
-        "status": "up",
-        "ping": 1026,
-        "msg": "200 OK"
-      },
-      {
-        "time": 1791651936975,
-        "status": "up",
-        "ping": 330,
-        "msg": "200 OK"
-      },
-      {
-        "time": 1791651987031,
-        "status": "up",
-        "ping": 373,
-        "msg": "200 OK"
-      },
-      {
-        "time": 1791652037017,
-        "status": "up",
-        "ping": 357,
-        "msg": "200 OK"
-      },
-      {
-        "time": 1791652087020,
-        "status": "up",
-        "ping": 347,
-        "msg": "200 OK"
-      },
-      {
-        "time": 1791652137029,
-        "status": "up",
-        "ping": 351,
-        "msg": "200 OK"
-      },
-      {
-        "time": 1791652187317,
-        "status": "up",
-        "ping": 633,
-        "msg": "200 OK"
-      },
-      {
-        "time": 1791652237068,
-        "status": "up",
-        "ping": 382,
-        "msg": "200 OK"
-      },
       {
         "time": 1791652260707,
         "status": "up",
@@ -626,11 +470,167 @@
         "status": "up",
         "ping": 377,
         "msg": "200 OK"
+      },
+      {
+        "time": 1791653453378,
+        "status": "up",
+        "ping": 351,
+        "msg": "200 OK"
+      },
+      {
+        "time": 1791653503377,
+        "status": "up",
+        "ping": 343,
+        "msg": "200 OK"
+      },
+      {
+        "time": 1791653553513,
+        "status": "up",
+        "ping": 463,
+        "msg": "200 OK"
+      },
+      {
+        "time": 1791653603407,
+        "status": "up",
+        "ping": 353,
+        "msg": "200 OK"
+      },
+      {
+        "time": 1791653653389,
+        "status": "up",
+        "ping": 327,
+        "msg": "200 OK"
+      },
+      {
+        "time": 1791653703514,
+        "status": "up",
+        "ping": 442,
+        "msg": "200 OK"
+      },
+      {
+        "time": 1791653753423,
+        "status": "up",
+        "ping": 345,
+        "msg": "200 OK"
+      },
+      {
+        "time": 1791653782067,
+        "status": "up",
+        "ping": 387,
+        "msg": "200 OK"
+      },
+      {
+        "time": 1791653829202,
+        "status": "up",
+        "ping": 344,
+        "msg": "200 OK"
+      },
+      {
+        "time": 1791653878103,
+        "status": "up",
+        "ping": 391,
+        "msg": "200 OK"
+      },
+      {
+        "time": 1791653925138,
+        "status": "up",
+        "ping": 376,
+        "msg": "200 OK"
+      },
+      {
+        "time": 1791653975113,
+        "status": "up",
+        "ping": 345,
+        "msg": "200 OK"
+      },
+      {
+        "time": 1791654025391,
+        "status": "up",
+        "ping": 612,
+        "msg": "200 OK"
+      },
+      {
+        "time": 1791654083546,
+        "status": "up",
+        "ping": 390,
+        "msg": "200 OK"
+      },
+      {
+        "time": 1791654130411,
+        "status": "up",
+        "ping": 345,
+        "msg": "200 OK"
+      },
+      {
+        "time": 1791654180422,
+        "status": "up",
+        "ping": 346,
+        "msg": "200 OK"
+      },
+      {
+        "time": 1791654230578,
+        "status": "up",
+        "ping": 486,
+        "msg": "200 OK"
+      },
+      {
+        "time": 1791654280455,
+        "status": "up",
+        "ping": 362,
+        "msg": "200 OK"
+      },
+      {
+        "time": 1791654330443,
+        "status": "up",
+        "ping": 340,
+        "msg": "200 OK"
+      },
+      {
+        "time": 1791654401562,
+        "status": "up",
+        "ping": 453,
+        "msg": "200 OK"
+      },
+      {
+        "time": 1791654450087,
+        "status": "up",
+        "ping": 371,
+        "msg": "200 OK"
+      },
+      {
+        "time": 1791654500155,
+        "status": "up",
+        "ping": 438,
+        "msg": "200 OK"
+      },
+      {
+        "time": 1791654550088,
+        "status": "up",
+        "ping": 368,
+        "msg": "200 OK"
+      },
+      {
+        "time": 1791654600090,
+        "status": "up",
+        "ping": 358,
+        "msg": "200 OK"
+      },
+      {
+        "time": 1791654650065,
+        "status": "up",
+        "ping": 330,
+        "msg": "200 OK"
+      },
+      {
+        "time": 1791654700214,
+        "status": "up",
+        "ping": 463,
+        "msg": "200 OK"
       }
     ],
     "status": "up",
-    "lastPing": 377,
-    "avgPing": 444.8,
+    "lastPing": 463,
+    "avgPing": 430.06,
     "uptime24h": 100,
     "uptime30d": 100,
     "uptime1y": 100,

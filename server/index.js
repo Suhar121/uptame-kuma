@@ -6,7 +6,14 @@ import { monitorEngine } from './monitor-engine.js';
 import { getSystemDrives, getHostOverview, getMetricsHistory, getSystemServices } from './system-metrics.js';
 import { getSettings, saveSettings, sendTelegramNotification } from './notifications.js';
 import { isSetupRequired, createInitialAdmin, loginUser, verifySession, logoutUser } from './auth.js';
-import { loadStatusPage, saveStatusPage, addIncidentDb, deleteIncidentDb } from './status-page.js';
+import { 
+  getAllStatusPages, 
+  loadStatusPage, 
+  saveStatusPage, 
+  deleteStatusPage, 
+  addIncidentDb, 
+  deleteIncidentDb 
+} from './status-page.js';
 
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -167,16 +174,51 @@ app.post('/api/auth/logout', (req, res) => {
 });
 
 // Status Page Endpoints
-app.get('/api/status-page', (req, res) => {
-  res.json(loadStatusPage());
+app.get('/api/status-pages', (req, res) => {
+  res.json(getAllStatusPages());
 });
+
+const handleGetStatusPage = (req, res) => {
+  const slug = req.params.slug || req.query.slug || 'monitor';
+  const page = loadStatusPage(slug);
+  if (!page) {
+    return res.status(404).json({ error: 'Status page not found' });
+  }
+
+  // If status page is private, verify user is logged in
+  if (page.isPublic === false) {
+    const authHeader = req.headers.authorization;
+    const token = authHeader && authHeader.startsWith('Bearer ') ? authHeader.slice(7) : null;
+    const user = verifySession(token);
+    if (!user) {
+      return res.json({
+        slug: page.slug,
+        title: page.title,
+        isPublic: false,
+        isRestricted: true,
+        message: 'This status page is private. Please sign in to view.'
+      });
+    }
+  }
+
+  res.json(page);
+};
+
+app.get('/api/status-page', handleGetStatusPage);
+app.get('/api/status-page/:slug', handleGetStatusPage);
 
 app.post('/api/status-page', (req, res) => {
   saveStatusPage(req.body);
   res.json({ success: true, config: req.body });
 });
 
+app.delete('/api/status-page/:slug', (req, res) => {
+  deleteStatusPage(req.params.slug);
+  res.json({ success: true });
+});
+
 app.post('/api/status-page/incident', (req, res) => {
+  const slug = req.body.slug || 'monitor';
   const newIncident = {
     id: 'inc-' + Date.now(),
     title: req.body.title || 'Service Degradation',
@@ -184,13 +226,14 @@ app.post('/api/status-page/incident', (req, res) => {
     style: req.body.style || 'warning',
     createdAt: new Date().toISOString()
   };
-  addIncidentDb(req.body.slug || 'monitor', newIncident);
-  res.json({ success: true, incident: newIncident, config: loadStatusPage(req.body.slug || 'monitor') });
+  addIncidentDb(slug, newIncident);
+  res.json({ success: true, incident: newIncident, config: loadStatusPage(slug) });
 });
 
 app.delete('/api/status-page/incident/:id', (req, res) => {
   deleteIncidentDb(req.params.id);
-  res.json({ success: true, config: loadStatusPage() });
+  const slug = req.query.slug || 'monitor';
+  res.json({ success: true, config: loadStatusPage(slug) });
 });
 
 // SPA fallback

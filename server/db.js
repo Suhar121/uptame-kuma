@@ -81,7 +81,8 @@ db.exec(`
     show_certificate_expiry INTEGER DEFAULT 0,
     show_only_last_heartbeat INTEGER DEFAULT 0,
     domain_names TEXT,
-    groups_json TEXT
+    groups_json TEXT,
+    is_public INTEGER DEFAULT 1
   );
 
   CREATE TABLE IF NOT EXISTS incidents (
@@ -93,6 +94,13 @@ db.exec(`
     created_at TEXT NOT NULL
   );
 `);
+
+// Add is_public column if missing in older schema
+try {
+  db.exec('ALTER TABLE status_page ADD COLUMN is_public INTEGER DEFAULT 1');
+} catch (e) {
+  // column already exists
+}
 
 console.log(`[SQLite] Database initialized at ${DB_FILE} with WAL mode.`);
 
@@ -367,34 +375,52 @@ export function saveSettingsToDb(settingsObj) {
 // STATUS PAGE DAO
 // =========================================================================
 
+export function getAllStatusPagesDb() {
+  const rows = db.prepare('SELECT * FROM status_page ORDER BY rowid ASC').all();
+  if (rows.length === 0) {
+    const def = getStatusPageDb('monitor');
+    return [def];
+  }
+  return rows.map(r => ({
+    slug: r.slug,
+    title: r.title,
+    description: r.description || '',
+    isPublic: Boolean(r.is_public !== 0)
+  }));
+}
+
 export function getStatusPageDb(slug = 'monitor') {
   const row = db.prepare('SELECT * FROM status_page WHERE slug = ?').get(slug);
   const incidents = db.prepare('SELECT * FROM incidents WHERE status_page_slug = ? ORDER BY created_at DESC').all(slug);
 
   if (!row) {
-    const def = {
-      slug: 'monitor',
-      title: 'monitor',
-      description: 'hahhaah',
-      footerText: 'Developed By Suhar Yaseen',
-      refreshInterval: 300,
-      theme: 'auto',
-      showTags: false,
-      showPoweredBy: true,
-      showCertificateExpiry: false,
-      showOnlyLastHeartbeat: false,
-      domainNames: [],
-      groups: [
-        {
-          id: 'g1',
-          name: 'Services',
-          monitorIds: ['2', '1']
-        }
-      ],
-      incidents: []
-    };
-    saveStatusPageDb(def);
-    return def;
+    if (slug === 'monitor') {
+      const def = {
+        slug: 'monitor',
+        title: 'monitor',
+        description: 'hahhaah',
+        footerText: 'Developed By Suhar Yaseen',
+        refreshInterval: 300,
+        theme: 'auto',
+        showTags: false,
+        showPoweredBy: true,
+        showCertificateExpiry: false,
+        showOnlyLastHeartbeat: false,
+        domainNames: [],
+        groups: [
+          {
+            id: 'g1',
+            name: 'Services',
+            monitorIds: ['2', '1']
+          }
+        ],
+        incidents: [],
+        isPublic: true
+      };
+      saveStatusPageDb(def);
+      return def;
+    }
+    return null;
   }
 
   let groups = [];
@@ -420,6 +446,7 @@ export function getStatusPageDb(slug = 'monitor') {
     showOnlyLastHeartbeat: Boolean(row.show_only_last_heartbeat),
     domainNames,
     groups,
+    isPublic: Boolean(row.is_public !== 0),
     incidents: incidents.map(i => ({
       id: i.id,
       title: i.title,
@@ -435,8 +462,8 @@ export function saveStatusPageDb(config) {
     INSERT OR REPLACE INTO status_page (
       slug, title, description, footer_text, refresh_interval, theme,
       show_tags, show_powered_by, show_certificate_expiry, show_only_last_heartbeat,
-      domain_names, groups_json
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      domain_names, groups_json, is_public
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   `);
 
   stmt.run(
@@ -451,8 +478,14 @@ export function saveStatusPageDb(config) {
     config.showCertificateExpiry ? 1 : 0,
     config.showOnlyLastHeartbeat ? 1 : 0,
     JSON.stringify(config.domainNames || []),
-    JSON.stringify(config.groups || [])
+    JSON.stringify(config.groups || []),
+    config.isPublic !== false ? 1 : 0
   );
+}
+
+export function deleteStatusPageDb(slug) {
+  db.prepare('DELETE FROM status_page WHERE slug = ?').run(slug);
+  db.prepare('DELETE FROM incidents WHERE status_page_slug = ?').run(slug);
 }
 
 export function addIncidentDb(slug = 'monitor', incident) {

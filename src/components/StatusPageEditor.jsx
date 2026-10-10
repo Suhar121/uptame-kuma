@@ -49,6 +49,12 @@ export default function StatusPageEditor({ monitors = [], onBackToDashboard }) {
   });
 
   const [initialConfig, setInitialConfig] = useState(null);
+  const [pagesList, setPagesList] = useState([]);
+  const [isNewPageModalOpen, setIsNewPageModalOpen] = useState(false);
+  const [newPageTitle, setNewPageTitle] = useState('');
+  const [newPageSlug, setNewPageSlug] = useState('');
+  const [newPagePublic, setNewPagePublic] = useState(true);
+
   const [isIncidentModalOpen, setIsIncidentModalOpen] = useState(false);
   const [saveStatus, setSaveStatus] = useState(null); // 'saved' | 'saving' | null
   const [countdown, setCountdown] = useState(300);
@@ -59,12 +65,29 @@ export default function StatusPageEditor({ monitors = [], onBackToDashboard }) {
   const [copiedLink, setCopiedLink] = useState(false);
   const [hoveredBar, setHoveredBar] = useState(null);
 
-  // Fetch status page config from server
+  const loadPagesList = async () => {
+    try {
+      const res = await fetch('/api/status-pages');
+      const data = await res.json();
+      if (Array.isArray(data)) {
+        setPagesList(data);
+      }
+    } catch (e) {
+      console.error('Failed to load status pages list:', e);
+    }
+  };
+
+  // Fetch status pages and default config on mount
   useEffect(() => {
-    fetch('/api/status-page')
+    loadPagesList();
+
+    const token = localStorage.getItem('uptime_token') || sessionStorage.getItem('uptime_token');
+    fetch('/api/status-page', {
+      headers: token ? { Authorization: `Bearer ${token}` } : {}
+    })
       .then(res => res.json())
       .then(data => {
-        if (data) {
+        if (data && !data.error) {
           setConfig(data);
           setInitialConfig(data);
           setCountdown(data.refreshInterval || 300);
@@ -72,6 +95,104 @@ export default function StatusPageEditor({ monitors = [], onBackToDashboard }) {
       })
       .catch(console.error);
   }, []);
+
+  const switchStatusPage = async (slug) => {
+    try {
+      const token = localStorage.getItem('uptime_token') || sessionStorage.getItem('uptime_token');
+      const res = await fetch(`/api/status-page/${slug}`, {
+        headers: token ? { Authorization: `Bearer ${token}` } : {}
+      });
+      const data = await res.json();
+      if (data && !data.error) {
+        setConfig(data);
+        setInitialConfig(data);
+        setCountdown(data.refreshInterval || 300);
+        // Expand first group
+        if (data.groups && data.groups.length > 0) {
+          setExpandedGroups({ [data.groups[0].id]: true });
+        }
+      }
+    } catch (e) {
+      console.error('Failed to load status page:', e);
+    }
+  };
+
+  const handleCreateNewPage = async (e) => {
+    if (e) e.preventDefault();
+    const cleanSlug = (newPageSlug || newPageTitle)
+      .trim()
+      .toLowerCase()
+      .replace(/[^a-z0-9_-]/g, '-');
+
+    if (!cleanSlug) return;
+
+    const newConfig = {
+      slug: cleanSlug,
+      title: newPageTitle.trim() || cleanSlug,
+      description: 'System Status and Operational Telemetry',
+      footerText: 'Powered by Uptime Kuma',
+      refreshInterval: 300,
+      theme: 'auto',
+      showTags: false,
+      showPoweredBy: true,
+      showCertificateExpiry: false,
+      showOnlyLastHeartbeat: false,
+      domainNames: [],
+      groups: [
+        {
+          id: 'g-' + Date.now(),
+          name: 'Core Services',
+          monitorIds: monitors.slice(0, 3).map(m => m.id)
+        }
+      ],
+      incidents: [],
+      isPublic: newPagePublic
+    };
+
+    try {
+      const res = await fetch('/api/status-page', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newConfig)
+      });
+      if (res.ok) {
+        setConfig(newConfig);
+        setInitialConfig(newConfig);
+        setIsNewPageModalOpen(false);
+        setNewPageTitle('');
+        setNewPageSlug('');
+        setNewPagePublic(true);
+        await loadPagesList();
+      }
+    } catch (e) {
+      console.error('Failed to create new status page:', e);
+    }
+  };
+
+  const handleDeleteCurrentPage = async () => {
+    if (pagesList.length <= 1) {
+      alert('Cannot delete the only status page.');
+      return;
+    }
+    if (!window.confirm(`Are you sure you want to delete status page "${config.title}" (/status/${config.slug})?`)) {
+      return;
+    }
+
+    try {
+      const res = await fetch(`/api/status-page/${config.slug}`, {
+        method: 'DELETE'
+      });
+      if (res.ok) {
+        const remaining = pagesList.filter(p => p.slug !== config.slug);
+        setPagesList(remaining);
+        if (remaining.length > 0) {
+          switchStatusPage(remaining[0].slug);
+        }
+      }
+    } catch (e) {
+      console.error('Failed to delete status page:', e);
+    }
+  };
 
   // Live countdown timer matching screenshot "Refresh in: 04:50"
   useEffect(() => {
@@ -110,6 +231,7 @@ export default function StatusPageEditor({ monitors = [], onBackToDashboard }) {
       if (res.ok) {
         setInitialConfig(config);
         setSaveStatus('saved');
+        loadPagesList();
         setTimeout(() => setSaveStatus(null), 3000);
       }
     } catch (e) {
@@ -129,7 +251,7 @@ export default function StatusPageEditor({ monitors = [], onBackToDashboard }) {
       const res = await fetch('/api/status-page/incident', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(incidentData)
+        body: JSON.stringify({ ...incidentData, slug: config.slug })
       });
       const data = await res.json();
       if (data.config) {
@@ -142,7 +264,7 @@ export default function StatusPageEditor({ monitors = [], onBackToDashboard }) {
 
   const handleDeleteIncident = async (id) => {
     try {
-      const res = await fetch(`/api/status-page/incident/${id}`, {
+      const res = await fetch(`/api/status-page/incident/${id}?slug=${config.slug}`, {
         method: 'DELETE'
       });
       const data = await res.json();
@@ -241,6 +363,38 @@ export default function StatusPageEditor({ monitors = [], onBackToDashboard }) {
       {viewMode === 'editor' && (
         <div className="w-full lg:w-[320px] xl:w-[350px] bg-card/95 border-r border-border p-5 flex flex-col justify-between shrink-0 overflow-y-auto shadow-sm">
           <div className="space-y-4">
+            {/* Multi-Page Selector Bar */}
+            <div className="pb-3 border-b border-border space-y-2">
+              <div className="flex items-center justify-between">
+                <span className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider font-sans flex items-center gap-1.5">
+                  <Globe className="w-3.5 h-3.5 text-primary" />
+                  <span>Select Status Page</span>
+                </span>
+                <button
+                  type="button"
+                  onClick={() => setIsNewPageModalOpen(true)}
+                  className="text-[11px] font-bold text-emerald-400 hover:text-emerald-300 flex items-center gap-1 transition-colors px-2 py-0.5 rounded bg-emerald-500/10 border border-emerald-500/20 hover:scale-105 active:scale-95"
+                  title="Create new status page"
+                >
+                  <Plus className="w-3 h-3 stroke-[3]" />
+                  <span>New Page</span>
+                </button>
+              </div>
+              <div className="relative">
+                <select
+                  value={config.slug}
+                  onChange={(e) => switchStatusPage(e.target.value)}
+                  className="w-full px-2.5 py-1.5 text-xs rounded-lg bg-muted/60 border border-border text-foreground font-mono focus:outline-none focus:ring-1 focus:ring-primary transition-all cursor-pointer"
+                >
+                  {pagesList.map(p => (
+                    <option key={p.slug} value={p.slug}>
+                      {p.title || p.slug} ({p.isPublic !== false ? '🌐 Public' : '🔒 Private'}) — /status/{p.slug}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+
             {/* Header Title & Discard/Save indicator */}
             <div className="flex items-center justify-between pb-2 border-b border-border">
               <span className="text-xs font-semibold text-muted-foreground font-sans uppercase tracking-wider flex items-center gap-1.5">
@@ -252,6 +406,58 @@ export default function StatusPageEditor({ monitors = [], onBackToDashboard }) {
                   <CheckCircle2 className="w-3 h-3" /> Saved!
                 </span>
               )}
+            </div>
+
+            {/* Access & Visibility Flag (Public vs Private) */}
+            <div>
+              <label className="block text-xs font-medium text-foreground mb-1.5 font-sans flex items-center justify-between">
+                <span>Access & Visibility</span>
+                {config.isPublic !== false ? (
+                  <span className="text-[10px] font-bold text-emerald-400 bg-emerald-500/15 border border-emerald-500/30 px-2 py-0.5 rounded-full flex items-center gap-1">
+                    🌐 Public
+                  </span>
+                ) : (
+                  <span className="text-[10px] font-bold text-amber-400 bg-amber-500/15 border border-amber-500/30 px-2 py-0.5 rounded-full flex items-center gap-1">
+                    🔒 Private
+                  </span>
+                )}
+              </label>
+              <div className="grid grid-cols-2 gap-2">
+                <button
+                  type="button"
+                  onClick={() => setConfig({ ...config, isPublic: true })}
+                  className={`p-2.5 rounded-xl border text-left transition-all ${
+                    config.isPublic !== false
+                      ? 'bg-emerald-500/15 border-emerald-500/50 text-emerald-300 shadow-2xs font-semibold'
+                      : 'bg-muted/30 border-border text-muted-foreground hover:text-foreground hover:bg-muted/50'
+                  }`}
+                >
+                  <div className="flex items-center gap-1.5 text-xs">
+                    <Globe className="w-3.5 h-3.5 text-emerald-400" />
+                    <span>Public</span>
+                  </div>
+                  <p className="text-[10px] text-muted-foreground font-normal mt-1 leading-tight">
+                    No login required. Open to all visitors.
+                  </p>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setConfig({ ...config, isPublic: false })}
+                  className={`p-2.5 rounded-xl border text-left transition-all ${
+                    config.isPublic === false
+                      ? 'bg-amber-500/15 border-amber-500/50 text-amber-300 shadow-2xs font-semibold'
+                      : 'bg-muted/30 border-border text-muted-foreground hover:text-foreground hover:bg-muted/50'
+                  }`}
+                >
+                  <div className="flex items-center gap-1.5 text-xs">
+                    <Lock className="w-3.5 h-3.5 text-amber-400" />
+                    <span>Private</span>
+                  </div>
+                  <p className="text-[10px] text-muted-foreground font-normal mt-1 leading-tight">
+                    Requires admin sign-in to view.
+                  </p>
+                </button>
+              </div>
             </div>
 
             {/* Slug */}
@@ -418,23 +624,37 @@ export default function StatusPageEditor({ monitors = [], onBackToDashboard }) {
           </div>
 
           {/* Save & Discard Buttons at Bottom */}
-          <div className="pt-6 border-t border-border flex items-center gap-3">
-            <button
-              onClick={handleSave}
-              disabled={saveStatus === 'saving'}
-              className="flex-1 flex items-center justify-center gap-2 py-2 px-3 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs shadow-md transition-all disabled:opacity-50 hover:scale-[1.02] active:scale-[0.98]"
-            >
-              <Save className="w-3.5 h-3.5" />
-              <span>{saveStatus === 'saving' ? 'Saving...' : 'Save'}</span>
-            </button>
+          <div className="pt-4 border-t border-border space-y-2.5">
+            <div className="flex items-center gap-3">
+              <button
+                onClick={handleSave}
+                disabled={saveStatus === 'saving'}
+                className="flex-1 flex items-center justify-center gap-2 py-2 px-3 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs shadow-md transition-all disabled:opacity-50 hover:scale-[1.02] active:scale-[0.98]"
+              >
+                <Save className="w-3.5 h-3.5" />
+                <span>{saveStatus === 'saving' ? 'Saving...' : 'Save'}</span>
+              </button>
 
-            <button
-              onClick={handleDiscard}
-              className="flex-1 flex items-center justify-center gap-2 py-2 px-3 rounded-lg bg-rose-500/90 hover:bg-rose-500 text-white font-bold text-xs shadow-md transition-all hover:scale-[1.02] active:scale-[0.98]"
-            >
-              <RotateCcw className="w-3.5 h-3.5" />
-              <span>Discard</span>
-            </button>
+              <button
+                onClick={handleDiscard}
+                className="flex-1 flex items-center justify-center gap-2 py-2 px-3 rounded-lg bg-rose-500/90 hover:bg-rose-500 text-white font-bold text-xs shadow-md transition-all hover:scale-[1.02] active:scale-[0.98]"
+              >
+                <RotateCcw className="w-3.5 h-3.5" />
+                <span>Discard</span>
+              </button>
+            </div>
+
+            {pagesList.length > 1 && (
+              <button
+                type="button"
+                onClick={handleDeleteCurrentPage}
+                className="w-full flex items-center justify-center gap-1.5 text-xs text-rose-400 hover:text-rose-300 hover:bg-rose-500/10 py-1.5 rounded-lg border border-rose-500/20 transition-colors"
+                title="Delete this status page"
+              >
+                <Trash2 className="w-3 h-3" />
+                <span>Delete Page</span>
+              </button>
+            )}
           </div>
         </div>
       )}
@@ -463,9 +683,20 @@ export default function StatusPageEditor({ monitors = [], onBackToDashboard }) {
               )}
             </div>
 
-            {/* Title display badge */}
-            <div className="bg-muted/40 border border-border px-3.5 py-1.5 rounded-lg text-lg font-bold text-foreground font-sans shadow-2xs">
-              {config.title || 'monitor'}
+            {/* Title display badge + Public/Private status */}
+            <div className="flex items-center gap-2">
+              <div className="bg-muted/40 border border-border px-3.5 py-1.5 rounded-lg text-lg font-bold text-foreground font-sans shadow-2xs">
+                {config.title || 'monitor'}
+              </div>
+              {config.isPublic !== false ? (
+                <span className="text-[11px] font-semibold text-emerald-400 bg-emerald-500/10 border border-emerald-500/25 px-2.5 py-1 rounded-md flex items-center gap-1">
+                  🌐 Public
+                </span>
+              ) : (
+                <span className="text-[11px] font-semibold text-amber-400 bg-amber-500/10 border border-amber-500/25 px-2.5 py-1 rounded-md flex items-center gap-1">
+                  🔒 Private
+                </span>
+              )}
             </div>
           </div>
 
@@ -496,26 +727,32 @@ export default function StatusPageEditor({ monitors = [], onBackToDashboard }) {
               </button>
             </div>
 
-            {/* Copy public link */}
+            {/* Copy link */}
             <button
               onClick={handleCopyLink}
-              title="Copy Public Status Page URL"
+              title="Copy Status Page URL"
               className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground px-2.5 py-1.5 rounded-lg bg-card border border-border shadow-2xs transition-colors"
             >
               {copiedLink ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
               <span className="hidden sm:inline">{copiedLink ? 'Copied!' : 'Copy Link'}</span>
             </button>
 
-            {/* Open live public page */}
+            {/* Open live page */}
             <a
               href={`/status/${config.slug || 'monitor'}`}
               target="_blank"
               rel="noopener noreferrer"
-              title="Open public status page in new tab (No login required)"
-              className="flex items-center gap-1.5 text-xs text-secondary hover:text-foreground px-2.5 py-1.5 rounded-lg bg-secondary/10 hover:bg-secondary/20 border border-secondary/30 shadow-2xs transition-all hover:scale-[1.02]"
+              title={config.isPublic !== false ? "Open public status page in new tab (No login required)" : "Open private status page in new tab (Admin login required)"}
+              className={`flex items-center gap-1.5 text-xs px-2.5 py-1.5 rounded-lg border shadow-2xs transition-all hover:scale-[1.02] ${
+                config.isPublic !== false
+                  ? 'text-emerald-400 hover:text-emerald-300 bg-emerald-500/10 hover:bg-emerald-500/20 border-emerald-500/30'
+                  : 'text-amber-400 hover:text-amber-300 bg-amber-500/10 hover:bg-amber-500/20 border-amber-500/30'
+              }`}
             >
               <ExternalLink className="w-3.5 h-3.5" />
-              <span className="hidden sm:inline">Open Public Page</span>
+              <span className="hidden sm:inline">
+                {config.isPublic !== false ? 'Open Public Page' : 'Open Private Page'}
+              </span>
             </a>
 
             {onBackToDashboard && (
@@ -859,6 +1096,134 @@ export default function StatusPageEditor({ monitors = [], onBackToDashboard }) {
         onClose={() => setIsIncidentModalOpen(false)}
         onSave={handleCreateIncident}
       />
+
+      {/* Create New Status Page Modal */}
+      {isNewPageModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-in fade-in">
+          <div className="bg-card border border-border rounded-2xl w-full max-w-md p-6 shadow-xl space-y-5 animate-in zoom-in-95">
+            <div className="flex items-center justify-between pb-3 border-b border-border">
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-lg bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center text-emerald-400">
+                  <Plus className="w-4 h-4 stroke-[3]" />
+                </div>
+                <div>
+                  <h3 className="text-base font-bold font-sans text-foreground">
+                    Create New Status Page
+                  </h3>
+                  <span className="text-[11px] text-muted-foreground font-mono">
+                    Host multiple status pages on separate paths
+                  </span>
+                </div>
+              </div>
+              <button
+                onClick={() => setIsNewPageModalOpen(false)}
+                className="text-muted-foreground hover:text-foreground p-1 transition-colors"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            <form onSubmit={handleCreateNewPage} className="space-y-4">
+              <div>
+                <label className="block text-xs font-semibold text-foreground mb-1 font-sans">
+                  Page Title
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={newPageTitle}
+                  onChange={(e) => {
+                    setNewPageTitle(e.target.value);
+                    if (!newPageSlug) {
+                      setNewPageSlug(e.target.value.toLowerCase().replace(/[^a-z0-9_-]/g, '-'));
+                    }
+                  }}
+                  placeholder="e.g. Client Services"
+                  className="w-full px-3 py-2 text-xs rounded-lg bg-muted/40 border border-border text-foreground placeholder-muted-foreground/50 focus:outline-none focus:ring-1 focus:ring-primary font-mono"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-foreground mb-1 font-sans">
+                  Slug (URL Path)
+                </label>
+                <div className="flex rounded-lg bg-muted/40 border border-border overflow-hidden focus-within:ring-1 focus-within:ring-primary">
+                  <span className="px-3 py-2 text-xs text-muted-foreground bg-muted/60 border-r border-border font-mono select-none">
+                    /status/
+                  </span>
+                  <input
+                    type="text"
+                    required
+                    value={newPageSlug}
+                    onChange={(e) => setNewPageSlug(e.target.value.toLowerCase().replace(/[^a-z0-9_-]/g, '-'))}
+                    placeholder="client"
+                    className="w-full px-3 py-2 text-xs bg-transparent text-foreground placeholder-muted-foreground/50 focus:outline-none font-mono"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-foreground mb-1.5 font-sans">
+                  Access & Visibility
+                </label>
+                <div className="grid grid-cols-2 gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setNewPagePublic(true)}
+                    className={`p-3 rounded-xl border text-left transition-all ${
+                      newPagePublic
+                        ? 'bg-emerald-500/15 border-emerald-500/50 text-emerald-300 font-bold shadow-2xs'
+                        : 'bg-muted/30 border-border text-muted-foreground hover:text-foreground'
+                    }`}
+                  >
+                    <div className="flex items-center gap-1.5 text-xs">
+                      <Globe className="w-3.5 h-3.5 text-emerald-400" />
+                      <span>Public</span>
+                    </div>
+                    <p className="text-[10px] text-muted-foreground font-normal mt-1 leading-tight">
+                      Zero login required
+                    </p>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => setNewPagePublic(false)}
+                    className={`p-3 rounded-xl border text-left transition-all ${
+                      !newPagePublic
+                        ? 'bg-amber-500/15 border-amber-500/50 text-amber-300 font-bold shadow-2xs'
+                        : 'bg-muted/30 border-border text-muted-foreground hover:text-foreground'
+                    }`}
+                  >
+                    <div className="flex items-center gap-1.5 text-xs">
+                      <Lock className="w-3.5 h-3.5 text-amber-400" />
+                      <span>Private</span>
+                    </div>
+                    <p className="text-[10px] text-muted-foreground font-normal mt-1 leading-tight">
+                      Admin login required
+                    </p>
+                  </button>
+                </div>
+              </div>
+
+              <div className="flex items-center justify-end gap-2.5 pt-3 border-t border-border">
+                <button
+                  type="button"
+                  onClick={() => setIsNewPageModalOpen(false)}
+                  className="px-4 py-2 rounded-lg bg-muted text-muted-foreground hover:text-foreground text-xs font-semibold transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="px-4 py-2 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-slate-950 text-xs font-bold shadow-md transition-all hover:scale-105 active:scale-95"
+                >
+                  Create Status Page
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
