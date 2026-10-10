@@ -8,7 +8,6 @@ import {
   Thermometer,
   Layers,
   Search,
-  RefreshCw,
   Sliders,
   BatteryMedium
 } from 'lucide-react';
@@ -18,18 +17,18 @@ function TelemetryCard({
   subtitle,
   data = [],
   unit = '',
-  color = '#3b82f6',
+  color = 'oklch(0.7214 0.1337 49.9802)',
   multiLines = null,
   yMaxOverride = null
 }) {
   if (!data || data.length < 2) {
     return (
-      <div className="bg-[#101726] border border-[#1b253b] rounded-xl p-4 flex flex-col justify-between h-56 select-none">
+      <div className="bg-card border border-border rounded-xl p-5 flex flex-col justify-between h-56 select-none shadow-xs text-card-foreground">
         <div>
-          <h3 className="text-sm font-semibold text-white">{title}</h3>
-          <p className="text-[11px] text-slate-400">{subtitle}</p>
+          <h3 className="text-sm font-semibold text-foreground font-sans">{title}</h3>
+          <p className="text-[11px] text-muted-foreground">{subtitle}</p>
         </div>
-        <div className="flex-1 flex items-center justify-center text-xs text-slate-500">
+        <div className="flex-1 flex items-center justify-center text-xs text-muted-foreground">
           Gathering telemetry points...
         </div>
       </div>
@@ -45,7 +44,6 @@ function TelemetryCard({
   const chartW = width - padLeft - padRight;
   const chartH = height - padTop - padBottom;
 
-  // Compute Max
   let allVals = [];
   if (multiLines) {
     multiLines.forEach(l => {
@@ -70,13 +68,13 @@ function TelemetryCard({
   ];
 
   return (
-    <div className="bg-[#101726] border border-[#1b253b] rounded-xl p-4 flex flex-col justify-between h-56 select-none">
+    <div className="bg-card border border-border rounded-xl p-5 flex flex-col justify-between h-56 select-none shadow-xs text-card-foreground hover:border-border/80 transition-colors">
       <div className="flex items-center justify-between">
         <div>
-          <h3 className="text-sm font-semibold text-white">{title}</h3>
-          <p className="text-[11px] text-slate-400">{subtitle}</p>
+          <h3 className="text-sm font-semibold text-foreground font-sans">{title}</h3>
+          <p className="text-[11px] text-muted-foreground">{subtitle}</p>
         </div>
-        <div className="text-slate-500 hover:text-slate-300 cursor-pointer">
+        <div className="text-muted-foreground hover:text-foreground cursor-pointer transition-colors">
           <Sliders className="w-3.5 h-3.5" />
         </div>
       </div>
@@ -84,8 +82,8 @@ function TelemetryCard({
       <div className="mt-2 flex-1">
         <svg viewBox={`0 0 ${width} ${height}`} className="w-full h-full overflow-visible">
           <defs>
-            <linearGradient id={`grad-${title.replace(/\s+/g, '')}`} x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor={color} stopOpacity="0.3" />
+            <linearGradient id={`grad-${title.replace(/[^a-zA-Z]/g, '')}`} x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor={color} stopOpacity="0.35" />
               <stop offset="100%" stopColor={color} stopOpacity="0.0" />
             </linearGradient>
           </defs>
@@ -95,8 +93,8 @@ function TelemetryCard({
             const y = getY(val);
             return (
               <g key={i}>
-                <line x1={padLeft} y1={y} x2={width - padRight} y2={y} stroke="#1b2842" strokeDasharray="2 2" strokeWidth="0.8" />
-                <text x={padLeft - 6} y={y + 3} fill="#64748b" fontSize="9" textAnchor="end">
+                <line x1={padLeft} y1={y} x2={width - padRight} y2={y} stroke="oklch(0.2520 0 0)" strokeDasharray="2 2" strokeWidth="0.8" />
+                <text x={padLeft - 6} y={y + 3} fill="oklch(0.6268 0 0)" fontSize="9" textAnchor="end" fontFamily="JetBrains Mono, monospace">
                   {val}{unit}
                 </text>
               </g>
@@ -115,7 +113,7 @@ function TelemetryCard({
                 const areaPath = `${linePath} L ${pts[pts.length - 1].x} ${padTop + chartH} L ${pts[0].x} ${padTop + chartH} Z`;
                 return (
                   <>
-                    <path d={areaPath} fill={`url(#grad-${title.replace(/\s+/g, '')})`} />
+                    <path d={areaPath} fill={`url(#grad-${title.replace(/[^a-zA-Z]/g, '')})`} />
                     <path d={linePath} fill="none" stroke={color} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
                   </>
                 );
@@ -123,7 +121,7 @@ function TelemetryCard({
             </>
           )}
 
-          {/* Multi lines (e.g. Load 1m/5m/15m, RX/TX) */}
+          {/* Multi lines */}
           {multiLines && multiLines.map((line, lineIdx) => {
             const pts = data.map((d, i) => ({
               x: getX(i),
@@ -149,9 +147,10 @@ function TelemetryCard({
               key={i}
               x={getX(lbl.idx)}
               y={height - 2}
-              fill="#64748b"
+              fill="oklch(0.6268 0 0)"
               fontSize="9"
               textAnchor="middle"
+              fontFamily="JetBrains Mono, monospace"
             >
               {lbl.time ? new Date(lbl.time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : ''}
             </text>
@@ -161,7 +160,7 @@ function TelemetryCard({
 
       {/* Legend if multilines */}
       {multiLines && (
-        <div className="flex items-center justify-center gap-3 pt-1 text-[10px] text-slate-400">
+        <div className="flex items-center justify-center gap-3 pt-1 text-[10px] text-muted-foreground font-mono">
           {multiLines.map((l, i) => (
             <div key={i} className="flex items-center gap-1">
               <span className="w-2.5 h-1 rounded-sm" style={{ backgroundColor: l.color }} />
@@ -179,7 +178,6 @@ export default function HostMetricsDashboard() {
   const [services, setServices] = useState([]);
   const [serviceFilter, setServiceFilter] = useState('');
   const [hostInfo, setHostInfo] = useState(null);
-  const [loading, setLoading] = useState(true);
 
   const fetchTelemetry = () => {
     Promise.all([
@@ -191,7 +189,6 @@ export default function HostMetricsDashboard() {
         setHistory(hist);
         setServices(srv);
         setHostInfo(overview);
-        setLoading(false);
       })
       .catch(console.error);
   };
@@ -207,26 +204,26 @@ export default function HostMetricsDashboard() {
   );
 
   return (
-    <div className="flex-1 bg-[#090e1a] overflow-y-auto p-6 space-y-6 select-none">
+    <div className="flex-1 bg-background text-foreground overflow-y-auto p-6 space-y-6 select-none font-mono">
       {/* Top Overview Bar */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 border-b border-[#1b253b] pb-4">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 border-b border-border pb-4">
         <div>
-          <h1 className="text-xl font-bold text-white flex items-center gap-2">
-            <Activity className="w-5 h-5 text-emerald-400" />
+          <h1 className="text-xl font-bold text-foreground flex items-center gap-2 font-sans">
+            <Activity className="w-5 h-5 text-primary" />
             <span>Host Resource & Hardware Telemetry</span>
           </h1>
-          <p className="text-xs text-slate-400 mt-0.5">
+          <p className="text-xs text-muted-foreground mt-0.5">
             Real-time operating system metrics across Linux & Windows kernels
           </p>
         </div>
 
         {hostInfo && (
-          <div className="flex items-center gap-3 text-xs text-slate-300">
-            <span className="px-2.5 py-1 rounded bg-[#131d2e] border border-[#1e2a42]">
-              OS: <strong className="text-white">{hostInfo.platform} ({hostInfo.distro || hostInfo.kernel})</strong>
+          <div className="flex items-center gap-3 text-xs text-muted-foreground">
+            <span className="px-3 py-1 rounded-lg bg-card border border-border shadow-2xs">
+              OS: <strong className="text-foreground">{hostInfo.platform} ({hostInfo.distro || hostInfo.kernel})</strong>
             </span>
-            <span className="px-2.5 py-1 rounded bg-[#131d2e] border border-[#1e2a42]">
-              Host: <strong className="text-white">{hostInfo.hostname}</strong>
+            <span className="px-3 py-1 rounded-lg bg-card border border-border shadow-2xs">
+              Host: <strong className="text-foreground">{hostInfo.hostname}</strong>
             </span>
           </div>
         )}
@@ -260,7 +257,7 @@ export default function HostMetricsDashboard() {
           subtitle="Disk storage utilization"
           data={history.map(h => ({ time: h.time, value: h.disk.usedGB }))}
           unit=" GB"
-          color="#8b5cf6"
+          color="#a855f7"
           yMaxOverride={history[0]?.disk?.totalGB || 250}
         />
 
@@ -273,7 +270,7 @@ export default function HostMetricsDashboard() {
           color="#f97316"
           multiLines={[
             { label: 'Total I/O', color: '#f97316', getValue: d => d.diskIO?.totalKBs || 0 },
-            { label: 'Write I/O', color: '#3b82f6', getValue: d => d.diskIO?.writeKBs || 0 }
+            { label: 'Write I/O', color: '#06b6d4', getValue: d => d.diskIO?.writeKBs || 0 }
           ]}
         />
 
@@ -325,18 +322,18 @@ export default function HostMetricsDashboard() {
       </div>
 
       {/* 9. Full Width: Wi-Fi Signal */}
-      <div className="bg-[#101726] border border-[#1b253b] rounded-xl p-4 select-none">
+      <div className="bg-card border border-border rounded-xl p-5 select-none shadow-xs text-card-foreground">
         <div className="flex items-center justify-between mb-2">
           <div>
-            <h3 className="text-sm font-semibold text-white flex items-center gap-2">
+            <h3 className="text-sm font-semibold text-foreground flex items-center gap-2 font-sans">
               <Wifi className="w-4 h-4 text-rose-500" />
               <span>Wi-Fi signal</span>
             </h3>
-            <p className="text-[11px] text-slate-400">
+            <p className="text-[11px] text-muted-foreground">
               Signal strength of connected Wi-Fi interfaces ({history[history.length - 1]?.wifi?.ssid || 'Default'})
             </p>
           </div>
-          <span className="text-xs font-mono px-2 py-0.5 rounded bg-rose-500/15 text-rose-400 border border-rose-500/30">
+          <span className="text-xs font-mono px-2.5 py-0.5 rounded-full bg-rose-500/15 text-rose-400 border border-rose-500/30">
             {history[history.length - 1]?.wifi?.signalLevel || -65} dBm
           </span>
         </div>
@@ -357,8 +354,8 @@ export default function HostMetricsDashboard() {
                   <>
                     {[-80, -70, -60].map((db, i) => (
                       <g key={i}>
-                        <line x1={40} y1={getY(db)} x2={880} y2={getY(db)} stroke="#1b2842" strokeDasharray="2 2" />
-                        <text x={35} y={getY(db) + 3} fill="#64748b" fontSize="9" textAnchor="end">{db} dBm</text>
+                        <line x1={40} y1={getY(db)} x2={880} y2={getY(db)} stroke="oklch(0.2520 0 0)" strokeDasharray="2 2" />
+                        <text x={35} y={getY(db) + 3} fill="oklch(0.6268 0 0)" fontSize="9" textAnchor="end">{db} dBm</text>
                       </g>
                     ))}
                     <path d={path} fill="none" stroke="#f43f5e" strokeWidth="2" strokeLinecap="round" />
@@ -370,16 +367,16 @@ export default function HostMetricsDashboard() {
         </div>
       </div>
 
-      {/* 10. Services Table (Matches screenshot 3: Systemd Services / Windows Services) */}
-      <div className="bg-[#101726] border border-[#1b253b] rounded-xl overflow-hidden select-none">
-        <div className="p-4 border-b border-[#1b253b] flex flex-col md:flex-row md:items-center justify-between gap-3">
+      {/* 10. Services Table */}
+      <div className="bg-card border border-border rounded-xl overflow-hidden select-none shadow-xs text-card-foreground">
+        <div className="p-4 border-b border-border flex flex-col md:flex-row md:items-center justify-between gap-3">
           <div>
-            <h3 className="text-sm font-semibold text-white flex items-center gap-2">
-              <Layers className="w-4 h-4 text-emerald-400" />
+            <h3 className="text-sm font-semibold text-foreground flex items-center gap-2 font-sans">
+              <Layers className="w-4 h-4 text-primary" />
               <span>{hostInfo?.platform === 'linux' ? 'Systemd Services' : 'System & Background Services'}</span>
             </h3>
-            <p className="text-[11px] text-slate-400 mt-0.5">
-              Total: {services.length} | Failed: {services.filter(s => s.state === 'Failed' || s.subState === 'Dead').length} | Updated every 10 seconds.
+            <p className="text-[11px] text-muted-foreground mt-0.5">
+              Total: {services.length} | Failed: {services.filter(s => s.state === 'Failed' || s.subState === 'Dead').length} | Auto-updated
             </p>
           </div>
 
@@ -387,19 +384,19 @@ export default function HostMetricsDashboard() {
           <div className="relative w-64">
             <input
               type="text"
-              placeholder="Filter..."
+              placeholder="Filter services..."
               value={serviceFilter}
               onChange={(e) => setServiceFilter(e.target.value)}
-              className="w-full bg-[#0c1322] text-xs text-slate-200 pl-8 pr-3 py-1.5 rounded-md border border-[#1f2b45] focus:outline-none focus:border-emerald-500/50"
+              className="w-full bg-input text-xs text-foreground placeholder-muted-foreground pl-8 pr-3 py-1.5 rounded-lg border border-border focus:outline-none focus:ring-1 focus:ring-ring font-mono"
             />
-            <Search className="w-3.5 h-3.5 text-slate-500 absolute left-2.5 top-2" />
+            <Search className="w-3.5 h-3.5 text-muted-foreground absolute left-2.5 top-2" />
           </div>
         </div>
 
         {/* Table */}
         <div className="overflow-x-auto max-h-96">
-          <table className="w-full text-left text-xs text-slate-300">
-            <thead className="bg-[#0c1322] text-slate-400 text-[11px] uppercase tracking-wider sticky top-0 border-b border-[#19243a]">
+          <table className="w-full text-left text-xs text-foreground">
+            <thead className="bg-muted/40 text-muted-foreground text-[11px] uppercase tracking-wider sticky top-0 border-b border-border">
               <tr>
                 <th className="py-2.5 px-4 font-medium">Name</th>
                 <th className="py-2.5 px-4 font-medium">State</th>
@@ -411,31 +408,30 @@ export default function HostMetricsDashboard() {
                 <th className="py-2.5 px-4 font-medium">Updated</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-[#162137]">
+            <tbody className="divide-y divide-border">
               {filteredServices.slice(0, 30).map((srv, idx) => (
-                <tr key={idx} className="hover:bg-[#141e33] transition-colors">
-                  <td className="py-2 px-4 font-medium text-white font-mono text-[11px]">{srv.name}</td>
-                  <td className="py-2 px-4">
-                    <span className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-semibold ${
-                      srv.state === 'Active' ? 'bg-emerald-500/15 text-emerald-400' : 'bg-slate-800 text-slate-400'
+                <tr key={idx} className="hover:bg-muted/40 transition-colors">
+                  <td className="py-2.5 px-4 font-medium text-foreground font-mono text-[11px]">{srv.name}</td>
+                  <td className="py-2.5 px-4">
+                    <span className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-semibold border ${
+                      srv.state === 'Active' ? 'bg-emerald-500/15 text-emerald-400 border-emerald-500/30' : 'bg-muted text-muted-foreground border-border'
                     }`}>
-                      <span className={`w-1.5 h-1.5 rounded-full ${srv.state === 'Active' ? 'bg-emerald-500' : 'bg-slate-500'}`} />
+                      <span className={`w-1.5 h-1.5 rounded-full ${srv.state === 'Active' ? 'bg-emerald-500' : 'bg-muted-foreground'}`} />
                       {srv.state}
                     </span>
                   </td>
-                  <td className="py-2 px-4">
-                    <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold ${
-                      srv.subState === 'Running' ? 'bg-emerald-500/15 text-emerald-400' : 'bg-slate-800 text-slate-400'
+                  <td className="py-2.5 px-4">
+                    <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold border ${
+                      srv.subState === 'Running' ? 'bg-emerald-500/15 text-emerald-400 border-emerald-500/30' : 'bg-muted text-muted-foreground border-border'
                     }`}>
-                      <span className={`w-1.5 h-1.5 rounded-full ${srv.subState === 'Running' ? 'bg-emerald-500' : 'bg-slate-500'}`} />
                       {srv.subState}
                     </span>
                   </td>
-                  <td className="py-2 px-4 text-slate-400 font-mono text-[11px]">{srv.cpu}</td>
-                  <td className="py-2 px-4 text-slate-400 font-mono text-[11px]">{srv.cpuPeak}</td>
-                  <td className="py-2 px-4 text-slate-300 font-mono text-[11px]">{srv.memory}</td>
-                  <td className="py-2 px-4 text-slate-400 font-mono text-[11px]">{srv.memoryPeak}</td>
-                  <td className="py-2 px-4 text-slate-500 font-mono text-[10px]">{srv.updated}</td>
+                  <td className="py-2.5 px-4 text-muted-foreground font-mono text-[11px]">{srv.cpu}</td>
+                  <td className="py-2.5 px-4 text-muted-foreground font-mono text-[11px]">{srv.cpuPeak}</td>
+                  <td className="py-2.5 px-4 text-foreground font-mono text-[11px]">{srv.memory}</td>
+                  <td className="py-2.5 px-4 text-muted-foreground font-mono text-[11px]">{srv.memoryPeak}</td>
+                  <td className="py-2.5 px-4 text-muted-foreground font-mono text-[10px]">{srv.updated}</td>
                 </tr>
               ))}
             </tbody>

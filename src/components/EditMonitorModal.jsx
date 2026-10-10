@@ -36,7 +36,6 @@ export default function EditMonitorModal({
 
   useEffect(() => {
     if (isOpen) {
-      // Fetch system drives
       fetch('/api/system/drives')
         .then(r => r.json())
         .then(data => {
@@ -93,13 +92,13 @@ export default function EditMonitorModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-xs p-4 select-none overflow-y-auto">
-      <div className="bg-[#0f172a] border border-[#1e2b45] rounded-xl w-full max-w-4xl shadow-2xl overflow-hidden my-8 animate-scale-up">
+      <div className="bg-card border border-border rounded-xl w-full max-w-4xl shadow-2xl overflow-hidden my-8 animate-scale-up text-card-foreground">
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-[#1b253b]">
-          <h2 className="text-xl font-bold text-white tracking-tight">
-            {isEditing ? 'Edit' : 'Add New Monitor'}
+        <div className="flex items-center justify-between px-6 py-4 border-b border-border">
+          <h2 className="text-lg font-bold text-foreground tracking-tight font-sans">
+            {isEditing ? 'Edit Monitor' : 'Add New Monitor'}
           </h2>
-          <button onClick={onClose} className="text-slate-400 hover:text-white transition-colors">
+          <button onClick={onClose} className="text-muted-foreground hover:text-foreground transition-colors">
             <X className="w-5 h-5" />
           </button>
         </div>
@@ -109,15 +108,15 @@ export default function EditMonitorModal({
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 text-xs">
             {/* LEFT COLUMN: General */}
             <div className="space-y-4">
-              <h3 className="text-base font-semibold text-slate-200">General</h3>
+              <h3 className="text-sm font-semibold text-foreground font-sans">General</h3>
 
               {/* Monitor Type */}
               <div>
-                <label className="block text-slate-300 font-medium mb-1.5">Monitor Type</label>
+                <label className="block text-muted-foreground font-medium mb-1.5">Monitor Type</label>
                 <select
                   value={type}
                   onChange={(e) => setType(e.target.value)}
-                  className="w-full bg-[#121c30] text-slate-200 border border-[#202f4a] rounded-md px-3 py-2 text-xs focus:outline-none focus:border-emerald-500/50"
+                  className="w-full bg-input text-foreground border border-border rounded-lg px-3 py-2 text-xs focus:outline-none focus:ring-1 focus:ring-ring"
                 >
                   <option value="http">HTTP(s)</option>
                   <option value="disk">Disk Space (Host)</option>
@@ -129,35 +128,35 @@ export default function EditMonitorModal({
 
               {/* Friendly Name */}
               <div>
-                <label className="block text-slate-300 font-medium mb-1">Friendly Name</label>
+                <label className="block text-muted-foreground font-medium mb-1">Friendly Name</label>
                 <input
                   type="text"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   placeholder="e.g. acad"
-                  className="w-full bg-[#121c30] text-slate-200 border border-[#202f4a] rounded-md px-3 py-2 text-xs focus:outline-none focus:border-emerald-500/50"
+                  className="w-full bg-input text-foreground border border-border rounded-lg px-3 py-2 text-xs focus:outline-none focus:ring-1 focus:ring-ring"
                 />
               </div>
 
               {/* URL or Disk Path */}
               {type === 'http' || type === 'port' ? (
                 <div>
-                  <label className="block text-slate-300 font-medium mb-1">URL</label>
+                  <label className="block text-muted-foreground font-medium mb-1">URL</label>
                   <input
                     type="text"
                     value={url}
                     onChange={(e) => setUrl(e.target.value)}
                     placeholder="https://academy.emlylabs.com/"
-                    className="w-full bg-[#121c30] text-slate-200 border border-[#202f4a] rounded-md px-3 py-2 font-mono text-xs focus:outline-none focus:border-emerald-500/50"
+                    className="w-full bg-input text-foreground border border-border rounded-lg px-3 py-2 font-mono text-xs focus:outline-none focus:ring-1 focus:ring-ring"
                   />
                 </div>
               ) : type === 'disk' ? (
                 <div>
-                  <label className="block text-slate-300 font-medium mb-1">Partition / Drive</label>
+                  <label className="block text-muted-foreground font-medium mb-1">Partition / Drive</label>
                   <select
                     value={target}
                     onChange={(e) => setTarget(e.target.value)}
-                    className="w-full bg-[#121c30] text-slate-200 border border-[#202f4a] rounded-md px-3 py-2 text-xs focus:outline-none focus:border-emerald-500/50"
+                    className="w-full bg-input text-foreground border border-border rounded-lg px-3 py-2 text-xs focus:outline-none focus:ring-1 focus:ring-ring"
                   >
                     {drives.map((d, i) => (
                       <option key={i} value={d.mount}>
@@ -171,8 +170,8 @@ export default function EditMonitorModal({
 
               {/* Heartbeat Interval */}
               <div>
-                <label className="block text-slate-300 font-medium mb-1">
-                  Heartbeat Interval <span className="text-slate-400 font-normal">(Check every {interval} seconds)</span>
+                <label className="block text-muted-foreground font-medium mb-1">
+                  Heartbeat Interval <span className="opacity-70 font-normal">(Check every {interval}s)</span>
                 </label>
                 <input
                   type="number"
@@ -180,31 +179,31 @@ export default function EditMonitorModal({
                   max="600"
                   value={interval}
                   onChange={(e) => setInterval(e.target.value)}
-                  className="w-full bg-[#121c30] text-slate-200 border border-[#202f4a] rounded-md px-3 py-2 text-xs focus:outline-none focus:border-emerald-500/50"
+                  className="w-full bg-input text-foreground border border-border rounded-lg px-3 py-2 text-xs focus:outline-none focus:ring-1 focus:ring-ring"
                 />
-                <span className="text-[11px] text-slate-500 mt-0.5 block">{interval} seconds</span>
+                <span className="text-[11px] text-muted-foreground/70 mt-0.5 block">{interval} seconds</span>
               </div>
 
               {/* Retries */}
               <div>
-                <label className="block text-slate-300 font-medium mb-1">Retries</label>
+                <label className="block text-muted-foreground font-medium mb-1">Retries</label>
                 <input
                   type="number"
                   min="0"
                   max="10"
                   value={retries}
                   onChange={(e) => setRetries(e.target.value)}
-                  className="w-full bg-[#121c30] text-slate-200 border border-[#202f4a] rounded-md px-3 py-2 text-xs focus:outline-none focus:border-emerald-500/50"
+                  className="w-full bg-input text-foreground border border-border rounded-lg px-3 py-2 text-xs focus:outline-none focus:ring-1 focus:ring-ring"
                 />
-                <span className="text-[11px] text-slate-500 mt-0.5 block">
-                  Maximum retries before the service is marked as down and a notification is sent
+                <span className="text-[11px] text-muted-foreground/70 mt-0.5 block">
+                  Maximum retries before marked as down and sending alerts
                 </span>
               </div>
 
               {/* Request Timeout */}
               <div>
-                <label className="block text-slate-300 font-medium mb-1">
-                  Request Timeout <span className="text-slate-400 font-normal">(Timeout after {timeout} seconds)</span>
+                <label className="block text-muted-foreground font-medium mb-1">
+                  Request Timeout <span className="opacity-70 font-normal">(Timeout after {timeout}s)</span>
                 </label>
                 <input
                   type="number"
@@ -212,14 +211,14 @@ export default function EditMonitorModal({
                   max="60"
                   value={timeout}
                   onChange={(e) => setTimeoutVal(e.target.value)}
-                  className="w-full bg-[#121c30] text-slate-200 border border-[#202f4a] rounded-md px-3 py-2 text-xs focus:outline-none focus:border-emerald-500/50"
+                  className="w-full bg-input text-foreground border border-border rounded-lg px-3 py-2 text-xs focus:outline-none focus:ring-1 focus:ring-ring"
                 />
               </div>
 
               {/* Resend Notification */}
               <div>
-                <label className="block text-slate-300 font-medium mb-1">
-                  Resend Notification if Down X times consecutively <span className="text-slate-400 font-normal">(Resend disabled)</span>
+                <label className="block text-muted-foreground font-medium mb-1">
+                  Resend Notification if Down X times consecutively
                 </label>
                 <input
                   type="number"
@@ -227,7 +226,7 @@ export default function EditMonitorModal({
                   max="20"
                   value={resendNotification}
                   onChange={(e) => setResendNotification(e.target.value)}
-                  className="w-full bg-[#121c30] text-slate-200 border border-[#202f4a] rounded-md px-3 py-2 text-xs focus:outline-none focus:border-emerald-500/50"
+                  className="w-full bg-input text-foreground border border-border rounded-lg px-3 py-2 text-xs focus:outline-none focus:ring-1 focus:ring-ring"
                 />
               </div>
             </div>
@@ -236,18 +235,17 @@ export default function EditMonitorModal({
             <div className="space-y-6">
               {/* Notifications Section */}
               <div className="space-y-3">
-                <h3 className="text-base font-semibold text-slate-200">Notifications</h3>
+                <h3 className="text-sm font-semibold text-foreground font-sans">Notifications</h3>
 
-                {/* Telegram Toggle (Exact match to screenshot) */}
-                <div className="p-3 bg-[#131e33] border border-[#202f4c] rounded-lg space-y-2.5">
+                {/* Telegram Toggle (Darkmatter style) */}
+                <div className="p-3.5 bg-muted/30 border border-border rounded-xl space-y-3">
                   <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      {/* Pill toggle */}
+                    <div className="flex items-center gap-2.5">
                       <button
                         type="button"
                         onClick={() => setTelegramEnabled(!telegramEnabled)}
                         className={`w-9 h-5 flex items-center rounded-full p-0.5 transition-colors ${
-                          telegramEnabled ? 'bg-[#22c55e]' : 'bg-slate-700'
+                          telegramEnabled ? 'bg-primary' : 'bg-muted'
                         }`}
                       >
                         <div
@@ -256,41 +254,38 @@ export default function EditMonitorModal({
                           }`}
                         />
                       </button>
-                      <span className="text-xs font-semibold text-slate-200">
+                      <span className="text-xs font-semibold text-foreground">
                         My Telegram Alert (1)
                       </span>
                       <button
                         type="button"
                         onClick={() => setShowChatIdInput(!showChatIdInput)}
-                        className="text-[11px] text-blue-400 hover:underline"
+                        className="text-[11px] text-secondary hover:underline ml-1"
                       >
                         Edit
                       </button>
                     </div>
 
-                    <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${
-                      telegramEnabled ? 'bg-emerald-500/15 text-emerald-400' : 'bg-slate-800 text-slate-500'
+                    <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full border ${
+                      telegramEnabled ? 'bg-primary/15 text-primary border-primary/30' : 'bg-muted text-muted-foreground border-border'
                     }`}>
-                      {telegramEnabled ? 'Active for this monitor' : 'Disabled'}
+                      {telegramEnabled ? 'Active' : 'Disabled'}
                     </span>
                   </div>
 
                   {/* Per-Monitor Specific Chat ID override */}
                   {showChatIdInput && (
-                    <div className="pt-2 border-t border-[#1e2a42] space-y-1">
-                      <label className="block text-[11px] text-slate-300">
-                        Specific Telegram Chat ID for this monitor <span className="text-slate-500">(Optional override)</span>:
+                    <div className="pt-2 border-t border-border space-y-1">
+                      <label className="block text-[11px] text-muted-foreground">
+                        Specific Telegram Chat ID for this monitor:
                       </label>
                       <input
                         type="text"
-                        placeholder="Leave blank to use global Chat ID, or enter -100... for team group"
+                        placeholder="Leave blank for global, or enter -100... for team group"
                         value={customChatId}
                         onChange={(e) => setCustomChatId(e.target.value)}
-                        className="w-full bg-[#0f172a] text-slate-200 border border-[#202f4a] rounded px-2.5 py-1.5 font-mono text-[11px] focus:outline-none focus:border-blue-500/50"
+                        className="w-full bg-input text-foreground border border-border rounded-lg px-2.5 py-1.5 font-mono text-[11px] focus:outline-none focus:ring-1 focus:ring-ring"
                       />
-                      <span className="text-[10px] text-slate-400">
-                        Routes alerts for this specific monitor to a dedicated channel, user, or group.
-                      </span>
                     </div>
                   )}
                 </div>
@@ -302,7 +297,7 @@ export default function EditMonitorModal({
                     onClose();
                     onOpenGlobalTelegram();
                   }}
-                  className="px-4 py-2 rounded-md bg-[#22c55e] hover:bg-[#16a34a] text-slate-950 font-bold text-xs tracking-wide transition-all shadow-md shadow-emerald-500/10"
+                  className="px-4 py-2 rounded-lg bg-primary hover:brightness-110 text-primary-foreground font-semibold text-xs tracking-wide transition-all shadow-sm"
                 >
                   Set Up Notification
                 </button>
@@ -310,11 +305,11 @@ export default function EditMonitorModal({
 
               {/* Proxy Section */}
               <div className="space-y-2">
-                <h3 className="text-base font-semibold text-slate-200">Proxy</h3>
-                <p className="text-[11px] text-slate-400">Not available, please set up.</p>
+                <h3 className="text-sm font-semibold text-foreground font-sans">Proxy</h3>
+                <p className="text-[11px] text-muted-foreground">Not available, please set up.</p>
                 <button
                   type="button"
-                  className="px-4 py-2 rounded-md bg-[#22c55e] hover:bg-[#16a34a] text-slate-950 font-bold text-xs tracking-wide transition-all"
+                  className="px-3.5 py-1.5 rounded-lg bg-muted hover:bg-muted/80 text-foreground text-xs transition-colors border border-border"
                 >
                   Set Up Proxy
                 </button>
@@ -323,29 +318,28 @@ export default function EditMonitorModal({
               {/* HTTP Options OR Threshold for Hardware */}
               {type === 'http' ? (
                 <div className="space-y-3 pt-2">
-                  <h3 className="text-base font-semibold text-slate-200">HTTP Options</h3>
+                  <h3 className="text-sm font-semibold text-foreground font-sans">HTTP Options</h3>
                   <div>
-                    <label className="block text-slate-300 font-medium mb-1">Method</label>
+                    <label className="block text-muted-foreground font-medium mb-1">Method</label>
                     <select
                       value={httpMethod}
                       onChange={(e) => setHttpMethod(e.target.value)}
-                      className="w-full bg-[#121c30] text-slate-200 border border-[#202f4a] rounded-md px-3 py-2 text-xs focus:outline-none focus:border-emerald-500/50"
+                      className="w-full bg-input text-foreground border border-border rounded-lg px-3 py-2 text-xs focus:outline-none focus:ring-1 focus:ring-ring"
                     >
                       <option value="GET">GET</option>
                       <option value="POST">POST</option>
                       <option value="HEAD">HEAD</option>
                       <option value="PUT">PUT</option>
                       <option value="DELETE">DELETE</option>
-                      <option value="PATCH">PATCH</option>
                     </select>
                   </div>
 
                   <div>
-                    <label className="block text-slate-300 font-medium mb-1">Body Encoding</label>
+                    <label className="block text-muted-foreground font-medium mb-1">Body Encoding</label>
                     <select
                       value={bodyEncoding}
                       onChange={(e) => setBodyEncoding(e.target.value)}
-                      className="w-full bg-[#121c30] text-slate-200 border border-[#202f4a] rounded-md px-3 py-2 text-xs focus:outline-none focus:border-emerald-500/50"
+                      className="w-full bg-input text-foreground border border-border rounded-lg px-3 py-2 text-xs focus:outline-none focus:ring-1 focus:ring-ring"
                     >
                       <option value="JSON">JSON</option>
                       <option value="XML">XML</option>
@@ -354,22 +348,22 @@ export default function EditMonitorModal({
                   </div>
 
                   <div>
-                    <label className="block text-slate-300 font-medium mb-1">Body</label>
+                    <label className="block text-muted-foreground font-medium mb-1">Body</label>
                     <textarea
                       rows={3}
                       value={httpBody}
                       onChange={(e) => setHttpBody(e.target.value)}
                       placeholder={'Example:\n{\n  "key": "value"\n}'}
-                      className="w-full bg-[#121c30] text-slate-200 border border-[#202f4a] rounded-md p-2.5 font-mono text-[11px] focus:outline-none focus:border-emerald-500/50"
+                      className="w-full bg-input text-foreground border border-border rounded-lg p-2.5 font-mono text-[11px] focus:outline-none focus:ring-1 focus:ring-ring"
                     />
                   </div>
                 </div>
               ) : (
                 <div className="space-y-3 pt-2">
-                  <h3 className="text-base font-semibold text-slate-200">Hardware Threshold</h3>
+                  <h3 className="text-sm font-semibold text-foreground font-sans">Hardware Threshold</h3>
                   <div>
-                    <label className="block text-slate-300 font-medium mb-1">
-                      Alert Threshold: <strong className="text-emerald-400">{threshold}%</strong>
+                    <label className="block text-muted-foreground font-medium mb-1">
+                      Alert Threshold: <strong className="text-primary font-mono">{threshold}%</strong>
                     </label>
                     <input
                       type="range"
@@ -377,9 +371,9 @@ export default function EditMonitorModal({
                       max="99"
                       value={threshold}
                       onChange={(e) => setThreshold(e.target.value)}
-                      className="w-full accent-emerald-500 cursor-pointer"
+                      className="w-full accent-primary cursor-pointer"
                     />
-                    <span className="text-[11px] text-slate-400">
+                    <span className="text-[11px] text-muted-foreground block mt-1">
                       Sends Telegram alert and marks DOWN if usage crosses {threshold}%
                     </span>
                   </div>
@@ -388,11 +382,11 @@ export default function EditMonitorModal({
             </div>
           </div>
 
-          {/* Footer Save Button (Matching bottom left green Save button in screenshot) */}
-          <div className="flex items-center justify-between pt-6 mt-6 border-t border-[#1b253b]">
+          {/* Footer Save Button */}
+          <div className="flex items-center justify-between pt-6 mt-6 border-t border-border">
             <button
               type="submit"
-              className="px-6 py-2 rounded-md bg-[#22c55e] hover:bg-[#16a34a] text-slate-950 font-bold text-xs tracking-wide shadow-lg shadow-emerald-500/20 transition-all cursor-pointer"
+              className="px-6 py-2 rounded-lg bg-primary hover:brightness-110 text-primary-foreground font-semibold text-xs tracking-wide shadow-sm transition-all cursor-pointer"
             >
               Save
             </button>
@@ -400,7 +394,7 @@ export default function EditMonitorModal({
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 rounded-md bg-[#131d2e] hover:bg-[#19263b] text-slate-300 text-xs transition-colors"
+              className="px-4 py-2 rounded-lg bg-muted hover:bg-muted/80 text-muted-foreground hover:text-foreground text-xs transition-colors border border-border"
             >
               Cancel
             </button>

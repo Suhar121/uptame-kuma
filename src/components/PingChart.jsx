@@ -11,8 +11,8 @@ export default function PingChart({ heartbeats = [], monitorType = 'http' }) {
   const points = heartbeats.slice(-30);
   if (points.length < 2) {
     return (
-      <div className="w-full h-44 flex items-center justify-center text-slate-500 bg-[#0d1424] rounded border border-slate-800">
-        Collecting ping metrics...
+      <div className="w-full h-44 flex items-center justify-center text-muted-foreground bg-card rounded-xl border border-border">
+        Collecting telemetry metrics...
       </div>
     );
   }
@@ -75,15 +75,15 @@ export default function PingChart({ heartbeats = [], monitorType = 'http' }) {
     }));
 
   return (
-    <div className="relative w-full bg-[#0d1424] rounded-md border border-[#1b253b] p-3 pt-4">
+    <div className="relative w-full bg-card rounded-xl border border-border p-4 shadow-sm select-none">
       <svg
         viewBox={`0 0 ${width} ${height}`}
         className="w-full h-44 overflow-visible select-none"
       >
         <defs>
-          <linearGradient id="pingGradient" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#22c55e" stopOpacity="0.35" />
-            <stop offset="100%" stopColor="#22c55e" stopOpacity="0.0" />
+          <linearGradient id="darkmatterPingGradient" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="#10b981" stopOpacity="0.35" />
+            <stop offset="100%" stopColor="#10b981" stopOpacity="0.0" />
           </linearGradient>
         </defs>
 
@@ -97,17 +97,17 @@ export default function PingChart({ heartbeats = [], monitorType = 'http' }) {
                 y1={y}
                 x2={width - padRight}
                 y2={y}
-                stroke="#1b2842"
+                stroke="oklch(0.2520 0 0)"
                 strokeWidth="1"
                 strokeDasharray="2 2"
               />
               <text
                 x={padLeft - 8}
                 y={y + 3}
-                fill="#64748b"
+                fill="oklch(0.6268 0 0)"
                 fontSize="10"
                 textAnchor="end"
-                fontFamily="sans-serif"
+                fontFamily="JetBrains Mono, monospace"
               >
                 {val}
               </text>
@@ -120,15 +120,16 @@ export default function PingChart({ heartbeats = [], monitorType = 'http' }) {
           x={-(height / 2)}
           y="12"
           transform="rotate(-90)"
-          fill="#64748b"
+          fill="oklch(0.6268 0 0)"
           fontSize="9"
           textAnchor="middle"
           letterSpacing="0.5"
+          fontFamily="JetBrains Mono, monospace"
         >
           {yAxisTitle}
         </text>
 
-        {/* Down Shading Red Bands (Exact Uptime Kuma feature) */}
+        {/* Down Shading Red Bands */}
         {downBands.map((band, idx) => {
           const x1 = getX(band.start) - (chartWidth / points.length) * 0.5;
           const x2 = getX(band.end) + (chartWidth / points.length) * 0.5;
@@ -149,13 +150,13 @@ export default function PingChart({ heartbeats = [], monitorType = 'http' }) {
         })}
 
         {/* Gradient fill area */}
-        <path d={areaPath} fill="url(#pingGradient)" />
+        <path d={areaPath} fill="url(#darkmatterPingGradient)" />
 
-        {/* Green Ping Line */}
+        {/* Green / Teal Ping Line */}
         <path
           d={linePath}
           fill="none"
-          stroke="#22c55e"
+          stroke="#10b981"
           strokeWidth="2"
           strokeLinecap="round"
           strokeLinejoin="round"
@@ -167,9 +168,10 @@ export default function PingChart({ heartbeats = [], monitorType = 'http' }) {
             key={idx}
             x={lbl.x}
             y={height - 5}
-            fill="#64748b"
+            fill="oklch(0.6268 0 0)"
             fontSize="10"
             textAnchor="middle"
+            fontFamily="JetBrains Mono, monospace"
           >
             {lbl.time}
           </text>
@@ -182,7 +184,7 @@ export default function PingChart({ heartbeats = [], monitorType = 'http' }) {
             cx={pt.x}
             cy={pt.y}
             r={hoveredPoint === i ? 4 : 2}
-            fill={pt.point.status === 'down' ? '#ef4444' : '#22c55e'}
+            fill={pt.point.status === 'down' ? '#ef4444' : '#10b981'}
             className="cursor-pointer transition-all"
             onMouseEnter={() => setHoveredPoint(i)}
             onMouseLeave={() => setHoveredPoint(null)}
@@ -193,7 +195,7 @@ export default function PingChart({ heartbeats = [], monitorType = 'http' }) {
       {/* Tooltip */}
       {hoveredPoint !== null && coords[hoveredPoint] && (
         <div
-          className="absolute z-10 px-2.5 py-1 text-xs bg-slate-900 border border-slate-700 text-white rounded shadow-lg pointer-events-none transform -translate-x-1/2 -translate-y-8"
+          className="absolute z-10 px-3 py-1.5 text-xs bg-popover border border-border text-foreground rounded-lg shadow-lg pointer-events-none transform -translate-x-1/2 -translate-y-8 font-mono"
           style={{
             left: `${(coords[hoveredPoint].x / width) * 100}%`,
             top: '30px'
@@ -204,7 +206,7 @@ export default function PingChart({ heartbeats = [], monitorType = 'http' }) {
               ? `${coords[hoveredPoint].point.ping} ${unit}`
               : 'DOWN (Error)'}
           </div>
-          <div className="text-[10px] text-slate-400">
+          <div className="text-[10px] text-muted-foreground">
             {new Date(coords[hoveredPoint].point.time).toLocaleTimeString()}
           </div>
         </div>

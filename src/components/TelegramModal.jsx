@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { X, Send, CheckCircle2, AlertCircle, HelpCircle, Bell } from 'lucide-react';
+import { X, Send, CheckCircle2, AlertCircle, HelpCircle } from 'lucide-react';
 
 export default function TelegramModal({ isOpen, onClose }) {
   const [botToken, setBotToken] = useState('');
@@ -75,34 +75,34 @@ export default function TelegramModal({ isOpen, onClose }) {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 backdrop-blur-xs p-4 select-none">
-      <div className="bg-[#0f1728] border border-[#1f2b45] rounded-xl w-full max-w-lg shadow-2xl overflow-hidden animate-scale-up">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-xs p-4 select-none">
+      <div className="bg-card border border-border rounded-xl w-full max-w-lg shadow-2xl overflow-hidden animate-scale-up text-card-foreground">
         {/* Header */}
-        <div className="flex items-center justify-between px-5 py-4 border-b border-[#1b253b]">
-          <div className="flex items-center gap-2">
-            <div className="w-7 h-7 rounded-full bg-blue-500/20 text-blue-400 flex items-center justify-center">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-border">
+          <div className="flex items-center gap-2.5">
+            <div className="w-8 h-8 rounded-lg bg-secondary/15 text-secondary flex items-center justify-center border border-secondary/30 shadow-xs">
               <Send className="w-4 h-4 -rotate-45 ml-0.5" />
             </div>
-            <h2 className="text-base font-semibold text-white">Setup Telegram Notifications</h2>
+            <h2 className="text-base font-bold text-foreground font-sans">Telegram Notifications</h2>
           </div>
-          <button onClick={onClose} className="text-slate-400 hover:text-white">
+          <button onClick={onClose} className="text-muted-foreground hover:text-foreground transition-colors">
             <X className="w-5 h-5" />
           </button>
         </div>
 
         {/* Content */}
-        <form onSubmit={handleSave} className="p-5 space-y-4 text-xs">
+        <form onSubmit={handleSave} className="p-6 space-y-4 text-xs">
           {/* Enable toggle */}
-          <div className="flex items-center justify-between p-3 rounded-lg bg-[#131d2e] border border-[#1f2a40]">
+          <div className="flex items-center justify-between p-3.5 rounded-xl bg-muted/40 border border-border">
             <div>
-              <span className="font-semibold text-white block">Enable Telegram Alerts</span>
-              <span className="text-[11px] text-slate-400">Send notifications when services go DOWN or UP</span>
+              <span className="font-semibold text-foreground block font-sans">Enable Telegram Alerts</span>
+              <span className="text-[11px] text-muted-foreground">Send notifications when services transition DOWN or UP</span>
             </div>
             <button
               type="button"
               onClick={() => setEnabled(!enabled)}
               className={`w-11 h-6 flex items-center rounded-full p-1 transition-colors ${
-                enabled ? 'bg-[#22c55e]' : 'bg-slate-700'
+                enabled ? 'bg-primary' : 'bg-muted'
               }`}
             >
               <div
@@ -115,7 +115,7 @@ export default function TelegramModal({ isOpen, onClose }) {
 
           {/* Bot Token */}
           <div>
-            <label className="block text-slate-300 font-medium mb-1">
+            <label className="block text-muted-foreground font-medium mb-1">
               Telegram Bot Token
             </label>
             <input
@@ -124,13 +124,13 @@ export default function TelegramModal({ isOpen, onClose }) {
               placeholder="e.g. 1234567890:ABCdefGhIJKlmNoPQRsTUVwxyZ"
               value={botToken}
               onChange={(e) => setBotToken(e.target.value)}
-              className="w-full bg-[#121a2c] text-slate-200 border border-[#1f2b45] rounded-md px-3 py-2 font-mono text-[11px] focus:outline-none focus:border-blue-500/50"
+              className="w-full bg-input text-foreground border border-border rounded-lg px-3 py-2 font-mono text-[11px] focus:outline-none focus:ring-1 focus:ring-ring"
             />
           </div>
 
           {/* Chat ID */}
           <div>
-            <label className="block text-slate-300 font-medium mb-1">
+            <label className="block text-muted-foreground font-medium mb-1">
               Telegram Chat ID
             </label>
             <input
@@ -139,51 +139,51 @@ export default function TelegramModal({ isOpen, onClose }) {
               placeholder="e.g. 123456789 or -1001234567890 for groups"
               value={chatId}
               onChange={(e) => setChatId(e.target.value)}
-              className="w-full bg-[#121a2c] text-slate-200 border border-[#1f2b45] rounded-md px-3 py-2 font-mono text-[11px] focus:outline-none focus:border-blue-500/50"
+              className="w-full bg-input text-foreground border border-border rounded-lg px-3 py-2 font-mono text-[11px] focus:outline-none focus:ring-1 focus:ring-ring"
             />
           </div>
 
           {/* Step-by-Step Instructions */}
-          <div className="p-3 bg-[#11192a] border border-[#1a253c] rounded-md text-[11px] text-slate-300 space-y-1.5 leading-relaxed">
-            <div className="font-semibold text-slate-200 flex items-center gap-1.5">
-              <HelpCircle className="w-3.5 h-3.5 text-blue-400" />
+          <div className="p-3.5 bg-muted/30 border border-border rounded-xl text-[11px] text-muted-foreground space-y-1.5 leading-relaxed">
+            <div className="font-semibold text-foreground flex items-center gap-1.5 font-sans">
+              <HelpCircle className="w-3.5 h-3.5 text-secondary" />
               <span>How to get your Bot Token & Chat ID:</span>
             </div>
-            <ol className="list-decimal list-inside space-y-1 text-slate-400">
+            <ol className="list-decimal list-inside space-y-1 text-muted-foreground">
               <li>Open Telegram and search for <strong>@BotFather</strong>.</li>
-              <li>Send <code>/newbot</code>, follow the prompt, and copy the <strong>HTTP API Token</strong>.</li>
-              <li>Open your newly created bot in Telegram and click <strong>Start</strong>.</li>
-              <li>To get your <strong>Chat ID</strong>, search for <strong>@userinfobot</strong> and send <code>/start</code>.</li>
+              <li>Send <code>/newbot</code> and copy your <strong>HTTP API Token</strong>.</li>
+              <li>Start your new bot in Telegram (click <strong>Start</strong>).</li>
+              <li>Get your <strong>Chat ID</strong> by searching for <strong>@userinfobot</strong> and clicking start.</li>
             </ol>
           </div>
 
           {/* Test Status Banner */}
           {testResult && (
             <div
-              className={`p-2.5 rounded-md flex items-center gap-2 text-xs ${
+              className={`p-3 rounded-lg flex items-center gap-2 text-xs border ${
                 testResult.success
-                  ? 'bg-emerald-500/15 border border-emerald-500/30 text-emerald-300'
-                  : 'bg-red-500/15 border border-red-500/30 text-red-300'
+                  ? 'bg-emerald-500/15 border-emerald-500/30 text-emerald-300'
+                  : 'bg-destructive/15 border-destructive/30 text-destructive'
               }`}
             >
               {testResult.success ? (
                 <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0" />
               ) : (
-                <AlertCircle className="w-4 h-4 text-red-400 flex-shrink-0" />
+                <AlertCircle className="w-4 h-4 text-destructive flex-shrink-0" />
               )}
               <span>{testResult.message}</span>
             </div>
           )}
 
           {/* Footer Buttons */}
-          <div className="flex items-center justify-between pt-3 border-t border-[#1b253b]">
+          <div className="flex items-center justify-between pt-3 border-t border-border">
             <button
               type="button"
               disabled={!botToken || !chatId || testing}
               onClick={handleTest}
-              className="flex items-center gap-1.5 px-3 py-2 rounded-md bg-[#162238] hover:bg-[#1e2e4a] text-blue-400 disabled:opacity-50 transition-colors font-medium"
+              className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-secondary/10 hover:bg-secondary/20 text-secondary border border-secondary/30 disabled:opacity-50 transition-colors font-semibold shadow-xs"
             >
-              <Send className="w-3.5 h-3.5" />
+              <Send className="w-3.5 h-3.5 -rotate-45" />
               <span>{testing ? 'Sending Test...' : 'Test Notification'}</span>
             </button>
 
@@ -191,13 +191,13 @@ export default function TelegramModal({ isOpen, onClose }) {
               <button
                 type="button"
                 onClick={onClose}
-                className="px-4 py-2 rounded-md bg-[#131d2e] hover:bg-[#19263b] text-slate-300"
+                className="px-4 py-2 rounded-lg bg-muted hover:bg-muted/80 text-muted-foreground hover:text-foreground border border-border text-xs transition-colors"
               >
                 Cancel
               </button>
               <button
                 type="submit"
-                className="px-5 py-2 rounded-md bg-[#22c55e] hover:bg-[#16a34a] text-slate-950 font-bold"
+                className="px-5 py-2 rounded-lg bg-primary hover:brightness-110 text-primary-foreground font-semibold text-xs tracking-wide shadow-sm"
               >
                 {saved ? 'Saved!' : 'Save Notification'}
               </button>
